@@ -26,6 +26,20 @@ Item {
         }
     }
 
+    MouseArea {
+        anchors.fill: parent
+        acceptedButtons: Qt.MiddleButton
+        onClicked: function (mouse) {
+            if (mouse.button !== Qt.MiddleButton)
+                return;
+
+            const id = root.modelData.id;
+            const cur = GlobalConfig.launcher.hiddenApps ?? [];
+            if (!cur.includes(id))
+                GlobalConfig.launcher.hiddenApps = cur.concat(id);
+        }
+    }
+
     Item {
         anchors.fill: parent
         anchors.leftMargin: Tokens.padding.medium
