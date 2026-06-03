@@ -46,6 +46,14 @@ StyledRect {
         return (value || "").replace(/bearer\s+[A-Za-z0-9_\-.]+/gi, "bearer [redacted]");
     }
 
+    function setUnavailable(message: string): void {
+        const msg = root.redact(message);
+        root.lastError = msg;
+        GithubStore.lastError = msg;
+        GithubStore.available = false;
+        console.error("[GitHubWidget] " + msg);
+    }
+
     implicitWidth: Tokens.sizes.bar.innerWidth
     implicitHeight: cells.implicitHeight + root.padding * 2
 
@@ -164,10 +172,7 @@ PY
 
         onExited: code => {
             if (code !== 0) {
-                const msg = root.redact(err.text || ("fetch failed (exit " + code + ")"));
-                root.lastError = msg;
-                GithubStore.lastError = msg;
-                console.error("[GitHubWidget] " + msg);
+                root.setUnavailable(err.text || ("fetch failed (exit " + code + ")"));
                 return;
             }
 
@@ -175,10 +180,7 @@ PY
             try {
                 const obj = JSON.parse(raw);
                 if (obj.errors) {
-                    const msg = obj.errors.map(e => e.message).join("; ");
-                    root.lastError = msg;
-                    GithubStore.lastError = msg;
-                    console.error("[GitHubWidget] " + msg);
+                    root.setUnavailable(obj.errors.map(e => e.message).join("; "));
                     return;
                 }
 
@@ -239,11 +241,9 @@ PY
                 GithubStore.total = root.total;
                 GithubStore.username = root.username;
                 GithubStore.lastError = "";
+                GithubStore.available = true;
             } catch (e) {
-                const msg = "parse error: " + e + " | first 200B: " + raw.slice(0, 200);
-                root.lastError = msg;
-                GithubStore.lastError = msg;
-                console.error("[GitHubWidget] " + msg);
+                root.setUnavailable("parse error: " + e + " | first 200B: " + raw.slice(0, 200));
             }
         }
     }

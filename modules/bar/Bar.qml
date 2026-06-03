@@ -162,7 +162,8 @@ ColumnLayout {
             DelegateChoice {
                 roleValue: "github"
                 delegate: EntryWrapper {
-                    visible: !root.fullscreen
+                    visible: !root.fullscreen && GithubStore.available
+
                     GithubActivity {
                         popouts: root.popouts
                     }
