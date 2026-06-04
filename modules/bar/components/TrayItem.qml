@@ -1,5 +1,6 @@
 pragma ComponentBehavior: Bound
 
+import Quickshell
 import QtQuick
 import Quickshell.Services.SystemTray
 import Caelestia.Config
@@ -11,6 +12,7 @@ MouseArea {
     id: root
 
     required property SystemTrayItem modelData
+    readonly property bool hasMenuEntries: menuOpener.children.values.some(entry => !entry.isSeparator)
 
     acceptedButtons: Qt.LeftButton | Qt.RightButton
     implicitWidth: Tokens.font.body.small.pointSize * 2
@@ -21,6 +23,11 @@ MouseArea {
             modelData.activate();
         else
             modelData.secondaryActivate();
+    }
+
+    QsMenuOpener {
+        id: menuOpener
+        menu: root.modelData.menu
     }
 
     ColouredIcon {
