@@ -1,7 +1,10 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import Quickshell.Io
 import Caelestia.Config
 import qs.components
+import qs.modules.bar.components as BarComponents
 import qs.services
 
 StyledRect {
@@ -49,8 +52,8 @@ StyledRect {
     function setUnavailable(message: string): void {
         const msg = root.redact(message);
         root.lastError = msg;
-        GithubStore.lastError = msg;
-        GithubStore.available = false;
+        BarComponents.GithubStore.lastError = msg;
+        BarComponents.GithubStore.available = false;
         console.error("[GitHubWidget] " + msg);
     }
 
@@ -170,7 +173,7 @@ PY
             id: err
         }
 
-        onExited: code => {
+        onExited: code => { // qmllint disable signal-handler-parameters
             if (code !== 0) {
                 root.setUnavailable(err.text || ("fetch failed (exit " + code + ")"));
                 return;
@@ -199,7 +202,7 @@ PY
                 start.setDate(now.getDate() - 6);
 
                 function fmt(d) {
-                    return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")}`;
+                    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
                 }
 
                 const dates = [];
@@ -237,11 +240,11 @@ PY
                 root.total = window.reduce((a, b) => a + (b.count || 0), 0);
                 root.lastError = "";
 
-                GithubStore.days = window;
-                GithubStore.total = root.total;
-                GithubStore.username = root.username;
-                GithubStore.lastError = "";
-                GithubStore.available = true;
+                BarComponents.GithubStore.days = window;
+                BarComponents.GithubStore.total = root.total;
+                BarComponents.GithubStore.username = root.username;
+                BarComponents.GithubStore.lastError = "";
+                BarComponents.GithubStore.available = true;
             } catch (e) {
                 root.setUnavailable("parse error: " + e + " | first 200B: " + raw.slice(0, 200));
             }
