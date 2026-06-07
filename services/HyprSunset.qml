@@ -3,53 +3,45 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import Caelestia
 
 Singleton {
     id: root
 
-    property bool active: false
+    property int temperature: 6000
+    readonly property bool active: hyprSunsetProcess.running
 
-    function refresh(): void {
-        checkProc.exec(["pgrep", "-x", "hyprsunset"]);
+    Process {
+        id: hyprSunsetProcess
+        command: ["hyprsunset", "--temperature", root.temperature.toString()]
+        running: false
     }
 
-    function start(temp: int): void {
-        const args = ["hyprsunset"];
-        if (temp)
-            args.push("-t", String(temp));
-        Quickshell.execDetached(args);
-        active = true;
+    function start(temp): void {
+        if (temp !== undefined && temp !== null)
+            root.temperature = temp;
+
+        hyprSunsetProcess.running = true;
     }
 
     function stop(): void {
-        Quickshell.execDetached(["pkill", "-x", "hyprsunset"]);
-        active = false;
+        hyprSunsetProcess.running = false;
     }
 
-    function toggle(temp: int): void {
-        refresh();
-        Qt.callLater(() => {
-            if (active)
-                stop();
-            else
-                start(temp);
-        });
-    }
-
-    Process {
-        id: checkProc
-
-        onExited: code => {
-            root.active = code === 0;
+    function toggle(temp): void {
+        let toggled = "";
+        if (hyprSunsetProcess.running) {
+            stop();
+            toggled = "Disabled";
+        } else {
+            start(temp);
+            toggled = "Enabled";
         }
+
+        Toaster.toast(qsTr("Night Light"), qsTr(toggled), "dark_mode");
     }
 
-    Timer {
-        interval: 5000
-        running: true
-        repeat: true
-        onTriggered: root.refresh()
+    Component.onDestruction: {
+        stop();
     }
-
-    Component.onCompleted: refresh()
 }
