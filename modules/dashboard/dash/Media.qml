@@ -96,7 +96,7 @@ Item {
 
         animate: true
         horizontalAlignment: Text.AlignHCenter
-        text: (Players.active?.trackAlbum ?? qsTr("No media")) || qsTr("Unknown album")
+        text: (Players.active?.trackAlbum ?? qsTr("*crickets*")) || qsTr("Unknown album")
         color: Colours.palette.m3outline
         font: Tokens.font.body.small
 
@@ -113,7 +113,7 @@ Item {
 
         animate: true
         horizontalAlignment: Text.AlignHCenter
-        text: (Players.active?.trackArtist ?? qsTr("No media")) || qsTr("Unknown artist")
+        text: (Players.active?.trackArtist ?? qsTr(" ")) || qsTr("Unknown artist")
         color: Colours.palette.m3secondary
 
         width: parent.implicitWidth - Tokens.padding.extraLargeIncreased
