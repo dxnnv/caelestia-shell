@@ -52,7 +52,7 @@ StyledRect {
             colour: Colours.palette.m3primary
             shapeColour: Colours.palette.m3primaryContainer
             fillColour: Qt.alpha(Colours.palette.m3secondary, 0.3)
-            shape: MaterialShape.Pentagon
+            shape: MaterialShape.Pill
 
             MaterialShape {
                 x: cpu.mShape.pointAtAngle(45).x - implicitSize / 2 + Tokens.padding.medium
@@ -89,7 +89,7 @@ StyledRect {
             colour: Colours.palette.m3tertiary
             shapeColour: Colours.palette.m3onTertiary
             fillColour: Qt.alpha(Colours.palette.m3tertiary, 0.3)
-            shape: MaterialShape.Slanted
+            shape: MaterialShape.Pill
         }
 
         Resource {
@@ -99,7 +99,7 @@ StyledRect {
             colour: Colours.palette.m3secondary
             shapeColour: Colours.palette.m3secondaryContainer
             fillColour: Qt.alpha(Colours.palette.m3secondary, 0.4)
-            shape: MaterialShape.Gem
+            shape: MaterialShape.Pill
         }
     }
 
