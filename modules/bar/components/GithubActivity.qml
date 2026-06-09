@@ -4,8 +4,8 @@ import QtQuick
 import Quickshell.Io
 import Caelestia.Config
 import qs.components
-import qs.modules.bar.components as BarComponents
 import qs.services
+import qs.modules.bar.components as BarComponents
 
 StyledRect {
     id: root
@@ -123,12 +123,11 @@ PY
             2??) : ;;
             *)   echo "viewer HTTP $vcode: $(head -c 200 "$tmpv")" >&2; rm -f "$tmpv"; exit 22 ;;
           esac
-          login="$(python - <<'PY' <"$tmpv"
+          login="$(python -c '
 import json,sys
 d=json.load(sys.stdin)
-print((d.get("data",{}) or {}).get("viewer",{}).get("login",""))
-PY
-          )"
+print(((d.get("data") or {}).get("viewer") or {}).get("login",""))
+' <"$tmpv")"
           rm -f "$tmpv"
         fi
         [ -n "$login" ] || { echo "no login provided and token did not resolve viewer.login" >&2; exit 2; }
