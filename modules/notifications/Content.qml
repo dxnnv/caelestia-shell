@@ -145,8 +145,11 @@ Item {
 
         required property NotifData modelData
         required property int index
+        property NotifData notifData: modelData
         readonly property alias nonAnimHeight: notif.nonAnimHeight
         property int idx
+
+        Component.onCompleted: notifData = modelData
 
         onIndexChanged: {
             if (index !== -1)
@@ -207,7 +210,7 @@ Item {
             Notification {
                 id: notif
 
-                modelData: wrapper.modelData
+                modelData: wrapper.notifData
                 implicitWidth: root.implicitWidth - root.padding - root.clampedPadding
             }
         }

@@ -32,7 +32,8 @@ StyledRect {
         x = 0;
         modelData.lock(this);
     }
-    Component.onDestruction: modelData.unlock(this)
+
+    Component.onDestruction: modelData?.unlock(this)
 
     Behavior on x {
         Anim {
