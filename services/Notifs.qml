@@ -58,7 +58,7 @@ Singleton {
         interval: 1000
         onTriggered: storage.setText(JSON.stringify(root.notClosed.map(n => ({
                     time: n.time,
-                    id: n.id,
+                    id: n.notificationId,
                     summary: n.summary,
                     body: n.body,
                     appIcon: n.appIcon,
