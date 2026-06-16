@@ -1,8 +1,9 @@
 pragma Singleton
 
 import QtQuick
+import Quickshell
 
-QtObject {
+Singleton {
     property var days: []
     property int total: 0
     property string username: ""
