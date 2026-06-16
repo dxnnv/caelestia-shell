@@ -14,7 +14,7 @@ Item {
         return metrics.tightBoundingRect.y - metrics.boundingRect.y;
     }
 
-    implicitWidth: hours.implicitWidth + minutes.implicitWidth + Tokens.spacing.small
+    implicitWidth: hours.implicitWidth + minutes.implicitWidth + Tokens.spacing.extraLarge
     implicitHeight: hourMetrics.tightBoundingRect.height
 
     StyledText {
@@ -22,7 +22,7 @@ Item {
 
         y: -root.calcTopOff(hourMetrics)
         text: Time.hourStr
-        color: Colours.palette.m3primary
+        color: Colours.palette.m3tertiary
         font: Tokens.font.headline.builders.large.scale(7 * root.centerScale).width(30).build()
 
         TextMetrics {
@@ -40,8 +40,8 @@ Item {
         y: -root.calcTopOff(minuteMetrics)
 
         text: Time.minuteStr
-        color: Colours.palette.m3secondary
-        font: Tokens.font.headline.builders.large.scale((GlobalConfig.services.useTwelveHourClock ? 3.8 : 7) * root.centerScale).width(30).build()
+        color: Colours.palette.m3primary
+        font: Tokens.font.headline.builders.large.scale(7 * root.centerScale).width(30).build()
 
         TextMetrics {
             id: minuteMetrics
@@ -56,7 +56,7 @@ Item {
         anchors.leftMargin: minuteMetrics.tightBoundingRect.x
         y: hourMetrics.tightBoundingRect.height - implicitHeight
 
-        active: GlobalConfig.services.useTwelveHourClock
+        active: false
         asynchronous: true
 
         sourceComponent: StyledRect {
