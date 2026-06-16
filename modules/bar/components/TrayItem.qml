@@ -1,7 +1,7 @@
 pragma ComponentBehavior: Bound
 
-import Quickshell
 import QtQuick
+import Quickshell
 import Quickshell.Services.SystemTray
 import Caelestia.Config
 import qs.components.effects
@@ -27,7 +27,8 @@ MouseArea {
 
     QsMenuOpener {
         id: menuOpener
-        menu: root.modelData.menu
+
+        menu: root.modelData.menu // qmllint disable unresolved-type
     }
 
     ColouredIcon {
