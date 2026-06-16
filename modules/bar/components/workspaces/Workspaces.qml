@@ -19,6 +19,16 @@ StyledClippingRect {
     readonly property bool onSpecial: activeSpecial !== "" && Hypr.workspaces.values.some(ws => ws.name === activeSpecial && (!GlobalConfig.bar.workspaces.perMonitorWorkspaces || ws.monitor?.name === currentMonitor?.name))
     readonly property int activeWsId: currentMonitor?.activeWorkspace?.id ?? 1
 
+    readonly property var occupied: {
+        const occ = {};
+        for (const ws of Hypr.workspaces.values)
+            occ[ws.id] = ws.lastIpcObject.windows > 0;
+        return occ;
+    }
+    readonly property int groupOffset: Math.floor((activeWsId - 1) / Config.bar.workspaces.shown) * Config.bar.workspaces.shown
+
+    property real blur: onSpecial ? 1 : 0
+
     function monitorSelector(monitor: var): string {
         return monitor?.name ?? monitor?.lastIpcObject?.name ?? "";
     }
@@ -52,16 +62,6 @@ StyledClippingRect {
 
         Hypr.dispatch(Hypr.usingLua ? `hl.dsp.focus({ workspace = ${ws} })` : `workspace ${ws}`);
     }
-
-    readonly property var occupied: {
-        const occ = {};
-        for (const ws of Hypr.workspaces.values)
-            occ[ws.id] = ws.lastIpcObject.windows > 0;
-        return occ;
-    }
-    readonly property int groupOffset: Math.floor((activeWsId - 1) / Config.bar.workspaces.shown) * Config.bar.workspaces.shown
-
-    property real blur: onSpecial ? 1 : 0
 
     implicitWidth: Tokens.sizes.bar.innerWidth
     implicitHeight: layout.implicitHeight + Tokens.padding.small
