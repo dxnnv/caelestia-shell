@@ -17,6 +17,40 @@ StyledClippingRect {
     readonly property bool onSpecial: Hypr.monitorFor(screen)?.lastIpcObject.specialWorkspace?.name !== ""
     readonly property int activeWsId: Hypr.monitorFor(screen)?.activeWorkspace?.id ?? 1
 
+    function monitorSelector(monitor: var): string {
+        return monitor?.name ?? monitor?.lastIpcObject?.name ?? "";
+    }
+
+    function switchOrSwapWorkspace(ws: int): void {
+        const targetMonitor = (screen ? Hypr.monitorFor(screen) : null) ?? currentMonitor ?? Hypr.focusedMonitor;
+        const target = monitorSelector(targetMonitor);
+        if (!targetMonitor || !target) {
+            Hypr.dispatch(Hypr.usingLua ? `hl.dsp.focus({ workspace = ${ws} })` : `workspace ${ws}`);
+            return;
+        }
+
+        Hypr.dispatch(Hypr.usingLua ? `hl.dsp.focus({ monitor = "${target}" })` : `focusmonitor ${target}`);
+
+        if (targetMonitor.activeWorkspace?.id === ws) {
+            Hypr.dispatch(Hypr.usingLua ? 'hl.dsp.workspace.toggle_special("special")' : "togglespecialworkspace special");
+            return;
+        }
+
+        const sourceMonitor = Hypr.monitors.values.find(m => m.activeWorkspace?.id === ws);
+        if (sourceMonitor) {
+            const source = monitorSelector(sourceMonitor);
+            if (source && source !== target)
+                Hypr.dispatch(Hypr.usingLua ? `hl.dsp.workspace.swap_monitors({ monitor1 = "${target}", monitor2 = "${source}" })` : `swapactiveworkspaces ${target} ${source}`);
+            return;
+        }
+
+        const existingWs = Hypr.workspaces.values.find(w => w.id === ws);
+        if (existingWs && monitorSelector(existingWs.monitor) !== target)
+            Hypr.dispatch(Hypr.usingLua ? `hl.dsp.workspace.move({ workspace = ${ws}, monitor = "${target}" })` : `moveworkspacetomonitor ${ws} ${target}`);
+
+        Hypr.dispatch(Hypr.usingLua ? `hl.dsp.focus({ workspace = ${ws} })` : `workspace ${ws}`);
+    }
+
     readonly property var occupied: {
         // Other monitors' workspaces count as unoccupied when hiding unoccupied
         const mon = !Config.bar.workspaces.showUnoccupied ? Hypr.monitorFor(screen) : null;
@@ -123,12 +157,8 @@ StyledClippingRect {
             anchors.fill: layout
             onClicked: event => {
                 const ws = (layout.childAt(event.x, event.y) as Workspace)?.ws;
-                if (!ws)
-                    return;
-                if (Hypr.activeWsId !== ws)
-                    Hypr.dispatch(Hypr.usingLua ? `hl.dsp.focus({ workspace = "${ws}" })` : `workspace ${ws}`);
-                else
-                    Hypr.dispatch(Hypr.usingLua ? 'hl.dsp.workspace.toggle_special("special")' : "togglespecialworkspace special");
+                if (ws)
+                    root.switchOrSwapWorkspace(ws);
             }
         }
 
