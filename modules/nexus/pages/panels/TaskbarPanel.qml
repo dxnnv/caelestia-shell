@@ -83,10 +83,17 @@ PageBase {
         }
 
         NavRow {
-            last: true
             icon: "schedule"
             text: qsTr("Clock")
             subtext: qsTr("Date, icon, background")
+            onClicked: root.nState.openSubPage(10)
+        }
+
+        NavRow {
+            last: true
+            icon: "code"
+            text: qsTr("GitHub")
+            subtext: qsTr("Contributions")
             onClicked: root.nState.openSubPage(10)
         }
 
