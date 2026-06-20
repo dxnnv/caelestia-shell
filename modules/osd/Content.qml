@@ -133,7 +133,7 @@ Item {
                 FilledSlider {
                     anchors.fill: parent
 
-                    icon: `brightness_${(Math.round(value * 6) + 1)}`
+                    icon: HyprSunset.active ? "bedtime" : `brightness_${(Math.round(value * 6) + 1)}`
                     value: root.brightness
                     onMoved: root.monitor?.setBrightness(value)
                     enableIconTap: true
