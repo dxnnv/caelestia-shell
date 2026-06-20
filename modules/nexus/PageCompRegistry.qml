@@ -140,6 +140,9 @@ QtObject {
                 Component {
                     BarClock {}
                 }
+                Component {
+                    BarGithub {}
+                }
             }
         },
         Component {
