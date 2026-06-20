@@ -84,10 +84,17 @@ PageBase {
         }
 
         NavRow {
-            last: true
             icon: "schedule"
             text: Tr.tr("Clock")
             subtext: Tr.tr("Date, icon, background")
+            onClicked: root.nState.openSubPage(10)
+        }
+
+        NavRow {
+            last: true
+            icon: "code"
+            text: Tr.tr("GitHub")
+            subtext: Tr.tr("Contributions")
             onClicked: root.nState.openSubPage(10)
         }
 
