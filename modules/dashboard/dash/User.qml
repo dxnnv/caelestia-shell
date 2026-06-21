@@ -251,13 +251,32 @@ Item {
             anchors.centerIn: parent
             spacing: Tokens.spacing.extraSmall
 
-            MaterialIcon {
+            Item {
                 id: wmIcon
 
+                property bool hasDashStatusPng: Config.paths.dashStatusPng.trim()
+
                 anchors.verticalCenter: parent.verticalCenter
-                text: "select_window"
-                color: Colours.palette.m3onSecondaryContainer
-                fontStyle: wmText.font
+                implicitWidth: wmText.implicitHeight
+                implicitHeight: implicitWidth
+                clip: true
+
+                MaterialIcon {
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: "select_window"
+                    color: Colours.palette.m3onSecondaryContainer
+                    fontStyle: wmText.font
+                    visible: !wmIcon.hasDashStatusPng
+                }
+
+                Image {
+                    anchors.fill: parent
+                    source: wmIcon.hasDashStatusPng ? Config.paths.dashStatusPng : ""
+                    fillMode: Image.PreserveAspectFit
+                    smooth: true
+                    mipmap: true
+                    visible: wmIcon.hasDashStatusPng
+                }
             }
 
             StyledText {
@@ -265,7 +284,8 @@ Item {
 
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.verticalCenterOffset: Math.round(fontInfo.pointSize * 0.1)
-                text: SysInfo.wm
+                //text: SysInfo.wm
+                text: "bwaa..."
                 color: Colours.palette.m3onSecondaryContainer
                 font: Tokens.font.body.builders.small.vaxis("slnt", -4).build()
                 width: Math.min(implicitWidth, Tokens.sizes.dashboard.userWidth - wmContainer.x - Tokens.padding.medium * 2 - wmIcon.implicitWidth - wmLabel.spacing - Tokens.padding.extraLarge)
