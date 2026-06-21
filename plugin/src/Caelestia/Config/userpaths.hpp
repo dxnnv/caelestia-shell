@@ -19,6 +19,7 @@ class UserPaths : public settings::ObjectNode {
         QString, lyricsDir, QStandardPaths::writableLocation(QStandardPaths::MusicLocation) + u"/Lyrics/"_s)
     CONFIG_PROPERTY(QString, sessionGif, u"root:/assets/kurukuru.gif"_s)
     CONFIG_PROPERTY(QString, mediaGif, u"root:/assets/bongocat.gif"_s)
+    CONFIG_PROPERTY(QString, dashStatusPng, u""_s)
     CONFIG_PROPERTY(QString, noNotifsPic, u"root:/assets/dino.png"_s)
     CONFIG_PROPERTY(QString, lockNoNotifsPic, u"root:/assets/dino.png"_s)
 };
