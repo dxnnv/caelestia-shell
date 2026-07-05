@@ -16,24 +16,26 @@ StyledRect {
     id: root
 
     required property NotifData modelData
-    readonly property bool hasImage: modelData.image.length > 0
-    readonly property bool hasAppIcon: modelData.appIcon.length > 0
-    readonly property int bodyTextFormat: /[<*_`#\[\]]/.test(modelData.body) ? Text.MarkdownText : Text.PlainText
+    property NotifData notifData: modelData
+    readonly property bool hasImage: notifData.image.length > 0
+    readonly property bool hasAppIcon: notifData.appIcon.length > 0
+    readonly property int bodyTextFormat: /[<*_`#\[\]]/.test(notifData.body) ? Text.MarkdownText : Text.PlainText
     readonly property int nonAnimHeight: summary.implicitHeight + (root.expanded ? Tokens.spacing.extraSmall * 2 + appName.height + body.height + actions.height + actions.anchors.topMargin : bodyPreview.height) + inner.anchors.margins * 2
     property bool expanded: Config.notifs.openExpanded
 
-    color: root.modelData.urgency === NotificationUrgency.Critical ? Colours.palette.m3secondaryContainer : Colours.tPalette.m3surfaceContainer
+    color: root.notifData.urgency === NotificationUrgency.Critical ? Colours.palette.m3secondaryContainer : Colours.tPalette.m3surfaceContainer
     radius: Tokens.rounding.large
 
     implicitHeight: inner.implicitHeight
 
     x: implicitWidth
     Component.onCompleted: {
+        notifData = modelData;
         x = 0;
-        modelData.lock(this);
+        notifData.lock(this);
     }
 
-    Component.onDestruction: modelData?.unlock(this)
+    Component.onDestruction: notifData?.unlock(this)
 
     Behavior on x {
         Anim {
@@ -50,29 +52,29 @@ StyledRect {
         acceptedButtons: Qt.LeftButton | Qt.MiddleButton
         preventStealing: true
 
-        onEntered: root.modelData.timer.stop()
+        onEntered: root.notifData.timer.stop()
         onExited: {
             if (!pressed)
-                root.modelData.timer.start();
+                root.notifData.timer.start();
         }
 
         drag.target: parent
         drag.axis: Drag.XAxis
 
         onPressed: event => {
-            root.modelData.timer.stop();
+            root.notifData.timer.stop();
             startY = event.y;
             if (event.button === Qt.MiddleButton)
-                root.modelData.close();
+                root.notifData.close();
         }
         onReleased: event => {
             if (!containsMouse)
-                root.modelData.timer.start();
+                root.notifData.timer.start();
 
             if (Math.abs(root.x) < root.implicitWidth * Config.notifs.clearThreshold)
                 root.x = 0;
             else
-                root.modelData.popup = false;
+                root.notifData.popup = false;
         }
         onPositionChanged: event => {
             if (pressed) {
@@ -85,7 +87,7 @@ StyledRect {
             if (!GlobalConfig.notifs.actionOnClick || event.button !== Qt.LeftButton)
                 return;
 
-            const actions = root.modelData.actions;
+            const actions = root.notifData.actions;
             if (actions.length === 1)
                 actions[0].invoke();
         }
@@ -118,13 +120,13 @@ StyledRect {
 
                 sourceComponent: StyledClippingRect {
                     radius: Tokens.rounding.full
-                    color: root.modelData.urgency === NotificationUrgency.Critical ? Colours.palette.m3error : root.modelData.urgency === NotificationUrgency.Low ? Colours.layer(Colours.palette.m3surfaceContainerHighest, 2) : Colours.palette.m3secondaryContainer
+                    color: root.notifData.urgency === NotificationUrgency.Critical ? Colours.palette.m3error : root.notifData.urgency === NotificationUrgency.Low ? Colours.layer(Colours.palette.m3surfaceContainerHighest, 2) : Colours.palette.m3secondaryContainer
                     implicitWidth: TokenConfig.sizes.notifs.image
                     implicitHeight: TokenConfig.sizes.notifs.image
 
                     Image {
                         anchors.fill: parent
-                        source: Qt.resolvedUrl(root.modelData.image)
+                        source: Qt.resolvedUrl(root.notifData.image)
                         fillMode: Image.PreserveAspectCrop
                         sourceSize: {
                             const size = TokenConfig.sizes.notifs.image * ((QsWindow.window as QsWindow)?.devicePixelRatio ?? 1);
@@ -149,7 +151,7 @@ StyledRect {
 
                 sourceComponent: StyledRect {
                     radius: Tokens.rounding.full
-                    color: root.modelData.urgency === NotificationUrgency.Critical ? Colours.palette.m3error : root.modelData.urgency === NotificationUrgency.Low ? Colours.layer(Colours.palette.m3surfaceContainerHighest, 2) : Colours.palette.m3secondaryContainer
+                    color: root.notifData.urgency === NotificationUrgency.Critical ? Colours.palette.m3error : root.notifData.urgency === NotificationUrgency.Low ? Colours.layer(Colours.palette.m3surfaceContainerHighest, 2) : Colours.palette.m3secondaryContainer
                     implicitWidth: root.hasImage ? Tokens.sizes.notifs.badge : TokenConfig.sizes.notifs.image
                     implicitHeight: root.hasImage ? Tokens.sizes.notifs.badge : TokenConfig.sizes.notifs.image
 
@@ -166,9 +168,9 @@ StyledRect {
 
                         sourceComponent: ColouredIcon {
                             anchors.fill: parent
-                            source: Quickshell.iconPath(root.modelData.appIcon)
-                            colour: root.modelData.urgency === NotificationUrgency.Critical ? Colours.palette.m3onError : root.modelData.urgency === NotificationUrgency.Low ? Colours.palette.m3onSurface : Colours.palette.m3onSecondaryContainer
-                            layer.enabled: root.modelData.appIcon.endsWith("symbolic")
+                            source: Quickshell.iconPath(root.notifData.appIcon)
+                            colour: root.notifData.urgency === NotificationUrgency.Critical ? Colours.palette.m3onError : root.notifData.urgency === NotificationUrgency.Low ? Colours.palette.m3onSurface : Colours.palette.m3onSecondaryContainer
+                            layer.enabled: root.notifData.appIcon.endsWith("symbolic")
                         }
                     }
 
@@ -179,8 +181,8 @@ StyledRect {
                         anchors.verticalCenterOffset: 1
 
                         sourceComponent: MaterialIcon {
-                            text: Icons.getNotifIcon(root.modelData.summary, root.modelData.urgency)
-                            color: root.modelData.urgency === NotificationUrgency.Critical ? Colours.palette.m3onError : root.modelData.urgency === NotificationUrgency.Low ? Colours.palette.m3onSurface : Colours.palette.m3onSecondaryContainer
+                            text: Icons.getNotifIcon(root.notifData.summary, root.notifData.urgency)
+                            color: root.notifData.urgency === NotificationUrgency.Critical ? Colours.palette.m3onError : root.notifData.urgency === NotificationUrgency.Low ? Colours.palette.m3onSurface : Colours.palette.m3onSecondaryContainer
                             fontStyle: Tokens.font.icon.medium
                         }
                     }
@@ -212,7 +214,7 @@ StyledRect {
                         centerY: progressIndicator.height / 2
 
                         startAngle: -90
-                        sweepAngle: ((root.modelData.hints.value ?? 0) / 100) * 360
+                        sweepAngle: ((root.notifData.hints.value ?? 0) / 100) * 360
 
                         Behavior on sweepAngle {
                             Anim {
@@ -248,7 +250,7 @@ StyledRect {
             TextMetrics {
                 id: appNameMetrics
 
-                text: root.modelData.appName
+                text: root.notifData.appName
                 font: appName.font
                 elide: Text.ElideRight
                 elideWidth: expandBtn.x - time.width - timeSep.width - summary.x - root.Tokens.spacing.small * 3
@@ -302,7 +304,7 @@ StyledRect {
             TextMetrics {
                 id: summaryMetrics
 
-                text: root.modelData.summary
+                text: root.notifData.summary
                 font: summary.font
                 elide: Text.ElideRight
                 elideWidth: expandBtn.x - time.width - timeSep.width - summary.x - root.Tokens.spacing.small * 3
@@ -343,7 +345,7 @@ StyledRect {
 
                 animate: true
                 horizontalAlignment: Text.AlignLeft
-                text: root.modelData.timeStr
+                text: root.notifData.timeStr
                 color: Colours.palette.m3onSurfaceVariant
                 font: Tokens.font.body.small
             }
@@ -360,7 +362,7 @@ StyledRect {
 
                 StateLayer {
                     radius: Tokens.rounding.full
-                    color: root.modelData.urgency === NotificationUrgency.Critical ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurface
+                    color: root.notifData.urgency === NotificationUrgency.Critical ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurface
                     onClicked: root.expanded = !root.expanded
                 }
 
@@ -409,7 +411,7 @@ StyledRect {
             TextMetrics {
                 id: bodyPreviewMetrics
 
-                text: root.modelData.body
+                text: root.notifData.body
                 font: bodyPreview.font
                 elide: Text.ElideRight
                 elideWidth: bodyPreview.width
@@ -425,7 +427,7 @@ StyledRect {
 
                 animate: true
                 textFormat: root.bodyTextFormat
-                text: root.modelData.body
+                text: root.notifData.body
                 color: Colours.palette.m3onSurfaceVariant
                 font: Tokens.font.body.small
                 wrapMode: Text.WrapAtWordBoundaryOrAnywhere
@@ -436,7 +438,7 @@ StyledRect {
                         return;
 
                     Qt.openUrlExternally(link);
-                    root.modelData.popup = false;
+                    root.notifData.popup = false;
                 }
 
                 opacity: root.expanded ? 1 : 0
@@ -468,16 +470,16 @@ StyledRect {
                 IconButton {
                     isRound: true
                     shapeMorph: true
-                    fillWidth: root.modelData.actions.length === 0
-                    inactiveColour: root.modelData.urgency === NotificationUrgency.Critical ? Colours.palette.m3secondary : Colours.layer(Colours.palette.m3surfaceContainerHighest, 2)
-                    inactiveOnColour: root.modelData.urgency === NotificationUrgency.Critical ? Colours.palette.m3onSecondary : Colours.palette.m3onSurfaceVariant
+                    fillWidth: root.notifData.actions.length === 0
+                    inactiveColour: root.notifData.urgency === NotificationUrgency.Critical ? Colours.palette.m3secondary : Colours.layer(Colours.palette.m3surfaceContainerHighest, 2)
+                    inactiveOnColour: root.notifData.urgency === NotificationUrgency.Critical ? Colours.palette.m3onSecondary : Colours.palette.m3onSurfaceVariant
                     icon: "close"
                     padding: Tokens.padding.extraSmall
-                    onClicked: root.modelData.close()
+                    onClicked: root.notifData.close()
                 }
 
                 Repeater {
-                    model: root.modelData.actions
+                    model: root.notifData.actions
 
                     TextButton {
                         required property var modelData
@@ -485,8 +487,8 @@ StyledRect {
                         isRound: true
                         shapeMorph: true
                         fillWidth: true
-                        inactiveColour: root.modelData.urgency === NotificationUrgency.Critical ? Colours.palette.m3secondary : Colours.layer(Colours.palette.m3surfaceContainerHighest, 2)
-                        inactiveOnColour: root.modelData.urgency === NotificationUrgency.Critical ? Colours.palette.m3onSecondary : Colours.palette.m3onSurfaceVariant
+                        inactiveColour: root.notifData.urgency === NotificationUrgency.Critical ? Colours.palette.m3secondary : Colours.layer(Colours.palette.m3surfaceContainerHighest, 2)
+                        inactiveOnColour: root.notifData.urgency === NotificationUrgency.Critical ? Colours.palette.m3onSecondary : Colours.palette.m3onSurfaceVariant
                         text: modelData.text
                         onClicked: modelData.invoke()
 
@@ -503,13 +505,13 @@ StyledRect {
                 IconButton {
                     isRound: true
                     shapeMorph: true
-                    fillWidth: root.modelData.actions.length === 0
-                    inactiveColour: root.modelData.urgency === NotificationUrgency.Critical ? Colours.palette.m3secondary : Colours.layer(Colours.palette.m3surfaceContainerHighest, 2)
-                    inactiveOnColour: root.modelData.urgency === NotificationUrgency.Critical ? Colours.palette.m3onSecondary : Colours.palette.m3onSurfaceVariant
+                    fillWidth: root.notifData.actions.length === 0
+                    inactiveColour: root.notifData.urgency === NotificationUrgency.Critical ? Colours.palette.m3secondary : Colours.layer(Colours.palette.m3surfaceContainerHighest, 2)
+                    inactiveOnColour: root.notifData.urgency === NotificationUrgency.Critical ? Colours.palette.m3onSecondary : Colours.palette.m3onSurfaceVariant
                     icon: copyTimer.running ? "inventory" : "content_copy"
                     padding: Tokens.padding.extraSmall
                     onClicked: {
-                        Quickshell.clipboardText = root.modelData.body;
+                        Quickshell.clipboardText = root.notifData.body;
                         copyTimer.restart();
                     }
                     label.animate: true
