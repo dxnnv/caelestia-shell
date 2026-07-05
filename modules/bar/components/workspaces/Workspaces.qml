@@ -14,7 +14,7 @@ StyledClippingRect {
     required property ShellScreen screen
     required property bool fullscreen
 
-    readonly property var currentMonitor: GlobalConfig.bar.workspaces.perMonitorWorkspaces ? Hypr.monitorFor(screen) : Hypr.focusedMonitor
+    readonly property var currentMonitor: GlobalConfig.bar.workspaces.perMonitorWorkspaces ? (screen ? Hypr.monitorFor(screen) : null) : Hypr.focusedMonitor
     readonly property string activeSpecial: currentMonitor?.lastIpcObject?.specialWorkspace?.name ?? ""
     readonly property bool onSpecial: activeSpecial !== "" && Hypr.workspaces.values.some(ws => ws.name === activeSpecial && (!GlobalConfig.bar.workspaces.perMonitorWorkspaces || ws.monitor?.name === currentMonitor?.name))
     readonly property int activeWsId: currentMonitor?.activeWorkspace?.id ?? 1
