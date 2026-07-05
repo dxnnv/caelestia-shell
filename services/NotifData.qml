@@ -59,6 +59,11 @@ QtObject {
         }
     }
 
+    readonly property Timer deferredCloseTimer: Timer {
+        interval: 1
+        onTriggered: notif.close()
+    }
+
     readonly property LazyLoader dummyImageLoader: LazyLoader {
         active: false
 
@@ -204,12 +209,13 @@ QtObject {
     function unlock(item: Item): void {
         locks.delete(item);
         if (closed)
-            close();
+            deferredCloseTimer.restart();
     }
 
     function close(): void {
         closed = true;
         if (locks.size === 0 && Notifs.list.includes(this)) {
+            deferredCloseTimer.stop();
             Notifs.list = Notifs.list.filter(n => n !== this);
             notification?.dismiss();
             destroy();
