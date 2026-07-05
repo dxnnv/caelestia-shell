@@ -23,7 +23,7 @@ Item {
     Loader {
         asynchronous: true
         anchors.centerIn: parent
-        sourceComponent: SysInfo.isDefaultLogo ? caelestiaLogo : distroIcon
+        sourceComponent: caelestiaLogo // SysInfo.isDefaultLogo ? caelestiaLogo : distroIcon
     }
 
     Component {
