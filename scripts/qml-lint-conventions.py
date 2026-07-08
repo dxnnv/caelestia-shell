@@ -61,6 +61,18 @@ RULE_COLOURS = {
 IMPORT_RE = re.compile(r"^import\s+(\S+)")
 
 
+class Violation:
+    def __init__(self, file: str, line: int, rule: str, msg: str):
+        self.file = file
+        self.line = line
+        self.rule = rule
+        self.msg = msg
+
+    def __str__(self):
+        c = RULE_COLOURS.get(self.rule, "")
+        return f"{c}[{self.rule}]{RESET} {self.file}:{self.line}: {self.msg}"
+
+
 def import_group(module: str) -> tuple[int, int] | None:
     """Return (group, depth) for a module import, or None to skip."""
     if module.startswith('"'):
@@ -101,7 +113,7 @@ def parse_imports(lines: list[str]) -> tuple[int | None, int | None, list[str], 
 
     for i, line in enumerate(lines):
         stripped = line.strip()
-        if not stripped or stripped.startswith("//") or stripped.startswith("pragma "):
+        if not stripped or stripped.startswith(("//", "pragma ")):
             continue
         m = IMPORT_RE.match(stripped)
         if m:
@@ -128,8 +140,8 @@ def check_imports(filepath: Path, lines: list[str], rel: str) -> list[Violation]
     imports = [(i, *entry) for i, entry in enumerate(module_imports)]
 
     for j in range(1, len(imports)):
-        _, prev_line, prev_group, prev_depth, prev_mod = imports[j - 1]
-        _, curr_line, curr_group, curr_depth, curr_mod = imports[j]
+        _, _, prev_group, prev_depth, prev_mod = imports[j - 1]
+        _, _, curr_group, curr_depth, curr_mod = imports[j]
 
         # Find actual line number for the current import
         lineno = 0
@@ -168,7 +180,7 @@ def check_imports(filepath: Path, lines: list[str], rel: str) -> list[Violation]
 def fix_imports(lines: list[str]) -> list[str]:
     """Sort imports and return the modified lines."""
     first, last, relative, module = parse_imports(lines)
-    if first is None:
+    if first is None or last is None:
         return lines
 
     module.sort(key=lambda x: (x[1], x[2], x[3]))
@@ -196,11 +208,10 @@ def check_file_structure(lines: list[str], rel: str) -> list[Violation]:
             break
 
     # Pragmas must come before imports
-    if pragma_indices and import_indices:
-        if pragma_indices[-1] > import_indices[0]:
-            violations.append(
-                Violation(rel, pragma_indices[-1] + 1, "file-structure", "pragmas should appear before imports")
-            )
+    if pragma_indices and import_indices and pragma_indices[-1] > import_indices[0]:
+        violations.append(
+            Violation(rel, pragma_indices[-1] + 1, "file-structure", "pragmas should appear before imports")
+        )
 
     # Separator between pragmas and imports
     if pragma_indices and import_indices:
@@ -237,9 +248,7 @@ def check_file_structure(lines: list[str], rel: str) -> list[Violation]:
         label = "imports" if import_indices else "pragmas"
         if gap == 0:
             violations.append(
-                Violation(
-                    rel, content_start + 1, "file-structure", f"blank line expected between {label} and content"
-                )
+                Violation(rel, content_start + 1, "file-structure", f"blank line expected between {label} and content")
             )
         elif gap > 1:
             violations.append(
@@ -323,8 +332,7 @@ def fix_section_separators(lines: list[str]) -> list[str]:
 
         if func_skip_depth > 0:
             func_skip_depth += stripped.count("{") - stripped.count("}")
-            if func_skip_depth <= 0:
-                func_skip_depth = 0
+            func_skip_depth = max(0, func_skip_depth)
             continue
 
         if stripped == "}":
@@ -414,18 +422,6 @@ INLINE_COMPONENT_RE = re.compile(r"^Component\s*\{")
 BEHAVIOR_ON_RE = re.compile(r"^[A-Z]\w+\s+on\s+\w[\w.]*\s*\{")
 # Attached signal handler: Component.onCompleted:, Drag.onDragStarted:, etc.
 ATTACHED_HANDLER_RE = re.compile(r"^[A-Z]\w+\.on[A-Z]\w*\s*:")
-
-
-class Violation:
-    def __init__(self, file: str, line: int, rule: str, msg: str):
-        self.file = file
-        self.line = line
-        self.rule = rule
-        self.msg = msg
-
-    def __str__(self):
-        c = RULE_COLOURS.get(self.rule, "")
-        return f"{c}[{self.rule}]{RESET} {self.file}:{self.line}: {self.msg}"
 
 
 class ScopeTracker:
@@ -522,8 +518,7 @@ def check_file(filepath: Path) -> list[Violation]:
         # Skip inside function bodies (JS code, not QML structure)
         if func_skip_depth > 0:
             func_skip_depth += stripped.count("{") - stripped.count("}")
-            if func_skip_depth <= 0:
-                func_skip_depth = 0
+            func_skip_depth = max(0, func_skip_depth)
             continue
 
         # Closing brace: pop all scopes deeper than this indent
@@ -627,11 +622,11 @@ def main():
     for f in qml_files:
         all_violations.extend(check_file(f))
 
-    for v in all_violations:
-        print(v)
-
-    print()
     if all_violations:
+        for v in all_violations:
+            print(v)
+        print()
+
         by_rule: dict[str, int] = {}
         for v in all_violations:
             by_rule[v.rule] = by_rule.get(v.rule, 0) + 1
