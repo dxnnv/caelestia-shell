@@ -61,6 +61,18 @@ RULE_COLOURS = {
 IMPORT_RE = re.compile(r"^import\s+(\S+)")
 
 
+class Violation:
+    def __init__(self, file: str, line: int, rule: str, msg: str):
+        self.file = file
+        self.line = line
+        self.rule = rule
+        self.msg = msg
+
+    def __str__(self):
+        c = RULE_COLOURS.get(self.rule, "")
+        return f"{c}[{self.rule}]{RESET} {self.file}:{self.line}: {self.msg}"
+
+
 def import_group(module: str) -> tuple[int, int] | None:
     """Return (group, depth) for a module import, or None to skip."""
     if module.startswith('"'):
@@ -168,7 +180,7 @@ def check_imports(filepath: Path, lines: list[str], rel: str) -> list[Violation]
 def fix_imports(lines: list[str]) -> list[str]:
     """Sort imports and return the modified lines."""
     first, last, relative, module = parse_imports(lines)
-    if first is None:
+    if first is None or last is None:
         return lines
 
     module.sort(key=lambda x: (x[1], x[2], x[3]))
@@ -416,18 +428,6 @@ BEHAVIOR_ON_RE = re.compile(r"^[A-Z]\w+\s+on\s+\w[\w.]*\s*\{")
 ATTACHED_HANDLER_RE = re.compile(r"^[A-Z]\w+\.on[A-Z]\w*\s*:")
 
 
-class Violation:
-    def __init__(self, file: str, line: int, rule: str, msg: str):
-        self.file = file
-        self.line = line
-        self.rule = rule
-        self.msg = msg
-
-    def __str__(self):
-        c = RULE_COLOURS.get(self.rule, "")
-        return f"{c}[{self.rule}]{RESET} {self.file}:{self.line}: {self.msg}"
-
-
 class ScopeTracker:
     """Tracks the current section and last-seen state for one indent level."""
 
@@ -616,7 +616,7 @@ def check_file(filepath: Path) -> list[Violation]:
 def main():
     fix_mode = "--fix" in sys.argv
     qml_files = sorted(p for p in REPO_ROOT.rglob("*.qml") if "build" not in p.parts)
-
+    
     if fix_mode:
         fixed = sum(1 for f in qml_files if fix_file(f))
         print(f"{BOLD}Fixed {fixed} file(s).{RESET}\n")
@@ -627,11 +627,11 @@ def main():
     for f in qml_files:
         all_violations.extend(check_file(f))
 
-    for v in all_violations:
-        print(v)
-
-    print()
     if all_violations:
+        for v in all_violations:
+            print(v)
+        print()
+
         by_rule: dict[str, int] = {}
         for v in all_violations:
             by_rule[v.rule] = by_rule.get(v.rule, 0) + 1
