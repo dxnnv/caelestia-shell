@@ -615,8 +615,9 @@ def check_file(filepath: Path) -> list[Violation]:
 
 def main():
     fix_mode = "--fix" in sys.argv
-    qml_files = sorted(p for p in REPO_ROOT.rglob("*.qml") if "build" not in p.parts)
-    
+    qml_files = sorted(
+        p for p in REPO_ROOT.rglob("*.qml") if not any(part == "build" or part.startswith("build-") for part in p.parts)
+    )    
     if fix_mode:
         fixed = sum(1 for f in qml_files if fix_file(f))
         print(f"{BOLD}Fixed {fixed} file(s).{RESET}\n")
