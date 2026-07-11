@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import Quickshell
 import Caelestia
 import Caelestia.Config
 import qs.components
@@ -10,6 +11,21 @@ StyledRect {
     id: root
 
     required property Toast modelData
+
+    // Bare names remain Material icons for compatibility.
+    // Prefix an icon theme name with "theme:" (for example, "theme:dialog-warning-symbolic").
+    // "material:" is accepted as an explicit form for material icons as well.
+    readonly property bool usesThemeIcon: modelData.icon.startsWith("theme:")
+    readonly property string iconName: modelData.icon.startsWith("theme:") || modelData.icon.startsWith("material:") ? modelData.icon.slice(modelData.icon.indexOf(":") + 1) : modelData.icon
+    readonly property color iconColour: {
+        if (modelData.type === Toast.Success)
+            return Colours.palette.m3onSuccess;
+        if (modelData.type === Toast.Warning)
+            return Colours.palette.m3onSecondaryContainer;
+        if (modelData.type === Toast.Error)
+            return Colours.palette.m3onError;
+        return Colours.palette.m3onSurfaceVariant;
+    }
 
     anchors.left: parent.left
     anchors.right: parent.right
@@ -74,17 +90,19 @@ StyledRect {
                 id: icon
 
                 anchors.centerIn: parent
-                text: root.modelData.icon
-                color: {
-                    if (root.modelData.type === Toast.Success)
-                        return Colours.palette.m3onSuccess;
-                    if (root.modelData.type === Toast.Warning)
-                        return Colours.palette.m3onSecondaryContainer;
-                    if (root.modelData.type === Toast.Error)
-                        return Colours.palette.m3onError;
-                    return Colours.palette.m3onSurfaceVariant;
-                }
+                text: root.iconName
+                color: root.iconColour
                 fontStyle: Tokens.font.icon.builders.large.scale(1.2).build()
+                visible: !root.usesThemeIcon
+            }
+
+            ColouredIcon {
+                anchors.centerIn: parent
+                implicitSize: icon.implicitHeight
+                source: root.usesThemeIcon ? Quickshell.iconPath(root.iconName, "image-missing") : ""
+                colour: root.iconColour
+                layer.enabled: root.iconName.endsWith("-symbolic")
+                visible: root.usesThemeIcon
             }
         }
 
