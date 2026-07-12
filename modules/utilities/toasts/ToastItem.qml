@@ -13,10 +13,11 @@ StyledRect {
     required property Toast modelData
 
     // Bare names remain Material icons for compatibility.
-    // Prefix an icon theme name with "theme:" (for example, "theme:dialog-warning-symbolic").
+    // Prefix an icon theme name with "theme:" or an image URL with "image:".
     // "material:" is accepted as an explicit form for material icons as well.
-    readonly property bool usesThemeIcon: modelData.icon.startsWith("theme:")
-    readonly property string iconName: modelData.icon.startsWith("theme:") || modelData.icon.startsWith("material:") ? modelData.icon.slice(modelData.icon.indexOf(":") + 1) : modelData.icon
+    readonly property int iconTypeSeparator: modelData.icon.indexOf(":")
+    readonly property string iconType: iconTypeSeparator === -1 ? "material" : modelData.icon.slice(0, iconTypeSeparator)
+    readonly property string iconName: iconTypeSeparator === -1 ? modelData.icon : modelData.icon.slice(iconTypeSeparator + 1)
     readonly property color iconColour: {
         if (modelData.type === Toast.Success)
             return Colours.palette.m3onSuccess;
@@ -71,7 +72,7 @@ StyledRect {
         anchors.rightMargin: Tokens.padding.medium
         spacing: Tokens.spacing.medium
 
-        StyledRect {
+        StyledClippingRect {
             radius: Tokens.rounding.large
             color: {
                 if (root.modelData.type === Toast.Success)
@@ -93,16 +94,25 @@ StyledRect {
                 text: root.iconName
                 color: root.iconColour
                 fontStyle: Tokens.font.icon.builders.large.scale(1.2).build()
-                visible: !root.usesThemeIcon
+                visible: root.iconType === "material"
             }
 
             ColouredIcon {
                 anchors.centerIn: parent
                 implicitSize: icon.implicitHeight
-                source: root.usesThemeIcon ? Quickshell.iconPath(root.iconName, "image-missing") : ""
+                source: root.iconType === "theme" ? Quickshell.iconPath(root.iconName, "image-missing") : ""
                 colour: root.iconColour
                 layer.enabled: root.iconName.endsWith("-symbolic")
-                visible: root.usesThemeIcon
+                visible: root.iconType === "theme"
+            }
+
+            Image {
+                anchors.fill: parent
+                source: root.iconType === "image" ? root.iconName : ""
+                fillMode: Image.PreserveAspectCrop
+                asynchronous: true
+                mipmap: true
+                visible: root.iconType === "image"
             }
         }
 
