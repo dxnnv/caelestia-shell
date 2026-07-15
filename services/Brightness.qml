@@ -6,6 +6,7 @@ import Quickshell
 import Quickshell.Io
 import Caelestia.Config
 import qs.components.misc
+import qs.services
 import qs.utils
 
 Singleton {
