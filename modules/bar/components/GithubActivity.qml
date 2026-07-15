@@ -55,7 +55,7 @@ StyledRect {
         root.lastError = msg;
         BarComponents.GithubStore.lastError = msg;
         BarComponents.GithubStore.available = false;
-        console.error("[GitHubWidget] " + msg);
+        console.error(lc, msg);
     }
 
     implicitWidth: Tokens.sizes.bar.innerWidth
@@ -256,5 +256,12 @@ PY
         repeat: true
         triggeredOnStart: true
         onTriggered: proc.exec(proc.command)
+    }
+
+    LoggingCategory {
+        id: lc
+
+        name: "caelestia.qml.modules.bar.github"
+        defaultLogLevel: LoggingCategory.Info
     }
 }
