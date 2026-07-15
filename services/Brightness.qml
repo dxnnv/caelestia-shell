@@ -71,7 +71,7 @@ Singleton {
     function detectDdcMonitors(): void {
         root.runDdc(["detect", "--brief"]).then(result => {
             if (result.code !== 0) {
-                console.warn("ddcutil detect failed:", result.stderr || result.stdout);
+                console.warn(lc, "ddcutil detect failed:", result.stderr || result.stdout);
                 return;
             }
 
@@ -183,6 +183,13 @@ Singleton {
         target: "brightness"
     }
 
+    LoggingCategory {
+        id: lc
+
+        name: "caelestia.qml.services.brightness"
+        defaultLogLevel: LoggingCategory.Info
+    }
+
     component Monitor: QtObject {
         id: monitor
 
@@ -222,7 +229,7 @@ Singleton {
 
             root.runDdc(ddcArgs.concat(["--noverify", "setvcp", "10", rounded])).then(result => {
                 if (result.code !== 0)
-                    console.warn(`ddcutil setvcp failed for bus ${busNum}:`, result.stderr || result.stdout);
+                    console.warn(lc, `ddcutil setvcp failed for bus ${busNum}:`, result.stderr || result.stdout);
 
                 ddcSetting = false;
 
@@ -273,7 +280,7 @@ Singleton {
                             return;
                         }
 
-                        console.warn(`ddcutil getvcp failed for bus ${busNum}:`, result.stderr || result.stdout);
+                        console.warn(lc, `ddcutil getvcp failed for bus ${busNum}:`, result.stderr || result.stdout);
                         return;
                     }
 
