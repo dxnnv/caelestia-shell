@@ -368,7 +368,7 @@ Item {
     Connections {
         function onConnectedChanged() {
             if (DiscordIpc.connected) {
-                console.log("Discord ARPC connected");
+                console.debug(lc, "Discord ARPC connected");
                 root.updatePresence();
             }
         }
@@ -422,5 +422,12 @@ Item {
         }
 
         target: GlobalConfig.services.discordArpc.manualOverride
+    }
+
+    LoggingCategory {
+        id: lc
+
+        name: "caelestia.qml.services.discordrpc"
+        defaultLogLevel: LoggingCategory.Info
     }
 }
