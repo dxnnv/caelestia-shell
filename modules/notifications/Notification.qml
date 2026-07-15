@@ -168,7 +168,7 @@ StyledRect {
 
                         sourceComponent: ColouredIcon {
                             anchors.fill: parent
-                            source: Quickshell.iconPath(root.notifData.appIcon)
+                            source: Icons.resolveIcon(root.notifData.appIcon)
                             colour: root.notifData.urgency === NotificationUrgency.Critical ? Colours.palette.m3onError : root.notifData.urgency === NotificationUrgency.Low ? Colours.palette.m3onSurface : Colours.palette.m3onSecondaryContainer
                             layer.enabled: root.notifData.appIcon.endsWith("symbolic")
                         }

@@ -251,4 +251,19 @@ Singleton {
             level--;
         return charging ? `battery_charging_${(level + 3) * 10}` : `battery_${level}_bar`;
     }
+
+    function resolveIcon(icon: string, fallback: string): string {
+        const fallbackIcon = fallback || "";
+
+        if (!icon)
+            return fallbackIcon ? Quickshell.iconPath(fallbackIcon) : "";
+
+        if (/^[a-z][a-z0-9+.-]*:/i.test(icon))
+            return icon;
+
+        if (icon.startsWith("/"))
+            return `file://${icon}`;
+
+        return fallbackIcon ? Quickshell.iconPath(icon, fallbackIcon) : Quickshell.iconPath(icon);
+    }
 }
