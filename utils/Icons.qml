@@ -229,4 +229,11 @@ Singleton {
             level--;
         return charging ? `battery_charging_${(level + 3) * 10}` : `battery_${level}_bar`;
     }
+
+    function resolveIcon(icon: string): string {
+        icon = icon || "";
+        if (/^[a-z][a-z0-9+.-]*:/i.test(icon))
+            return icon;
+        return icon.startsWith("/") ? Qt.resolvedUrl(icon) : Quickshell.iconPath(icon || "image-missing", true);
+    }
 }
