@@ -247,7 +247,7 @@ Singleton {
     }
 
     function resolveIcon(icon: string, fallback: string): string {
-        const fallbackIcon = fallback || "";
+        const fallbackIcon = fallback && fallback !== "undefined" ? fallback : "";
 
         if (!icon)
             return fallbackIcon ? Quickshell.iconPath(fallbackIcon) : "";
