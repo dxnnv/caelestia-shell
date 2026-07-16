@@ -80,6 +80,16 @@ Item {
             }
         }
 
+        Keys.onLeftPressed: event => {
+            event.accepted = list.showWallpapers;
+            if (event.accepted)
+                list.currentList?.decrementCurrentIndex();
+        }
+        Keys.onRightPressed: event => {
+            event.accepted = list.showWallpapers;
+            if (event.accepted)
+                list.currentList?.incrementCurrentIndex();
+        }
         Keys.onUpPressed: list.currentList?.decrementCurrentIndex()
         Keys.onDownPressed: list.currentList?.incrementCurrentIndex()
 
