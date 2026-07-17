@@ -158,11 +158,11 @@ Item {
 
                 source: videoContainer.path ? "file://" + videoContainer.path : ""
                 videoOutput: output
-                loops: MediaPlayer.Infinite // qmllint disable unqualified
+                loops: MediaPlayer.Infinite
                 autoPlay: true
 
                 onPlaybackStateChanged: function (playbackState) {
-                    if (playbackState === MediaPlayer.PlayingState) // qmllint disable unqualified
+                    if (playbackState === MediaPlayer.PlayingState)
                         videoAnim.start();
                 }
 
@@ -174,10 +174,8 @@ Item {
             VideoOutput {
                 id: output
 
-                // qmllint disable unqualified
-                // qmllint disable unresolved-type
                 anchors.fill: videoContainer
-                fillMode: VideoOutput.PreserveAspectCrop // qmllint disable unqualified
+                fillMode: VideoOutput.PreserveAspectCrop
             }
 
             Anim on opacity {
