@@ -518,6 +518,10 @@ For example, to automatically hide the bar on the monitor named `DP-1`:
             {
                 "id": "battery",
                 "enabled": true
+            },
+            {
+                "id": "peripheralBattery",
+                "enabled": true
             }
         ],
         "entries": [
@@ -558,7 +562,8 @@ For example, to automatically hide the bar on the monitor named `DP-1`:
                 "enabled": true
             }
         ],
-        "excludedScreens": []
+        "excludedScreens": [],
+        "peripheralBatteryExcluded": []
     },
     "border": {
         "thickness": 10,
