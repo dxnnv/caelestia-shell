@@ -498,6 +498,10 @@ For example, to automatically hide the bar on the monitor named `DP-1`:
                 "enabled": true
             },
             {
+                "id": "yubiKey",
+                "enabled": false
+            },
+            {
                 "id": "battery",
                 "enabled": true
             },
