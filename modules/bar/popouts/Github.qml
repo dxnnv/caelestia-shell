@@ -15,15 +15,15 @@ Item {
     property string username: ""
     property string lastError: ""
 
-    implicitWidth: layout.implicitWidth + Tokens.padding.normal * 2
-    implicitHeight: layout.implicitHeight + Tokens.padding.normal * 3
+    implicitWidth: layout.implicitWidth + Tokens.padding.medium * 2
+    implicitHeight: layout.implicitHeight + Tokens.padding.medium * 3
 
     ColumnLayout {
         id: layout
 
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
-        spacing: Tokens.spacing.normal
+        spacing: Tokens.spacing.medium
 
         StyledText {
             text: root.username.length > 0 ? `@${root.username}` : "GitHub"
@@ -36,11 +36,11 @@ Item {
         }
 
         StyledRect {
-            Layout.topMargin: Tokens.spacing.normal
-            implicitWidth: ctaRow.implicitWidth + Tokens.padding.normal * 2
-            implicitHeight: ctaRow.implicitHeight + Tokens.padding.small * 2
+            Layout.topMargin: Tokens.spacing.medium
+            implicitWidth: ctaRow.implicitWidth + Tokens.padding.medium * 2
+            implicitHeight: ctaRow.implicitHeight + Tokens.padding.medium * 2
             color: Services.Colours.palette.m3primaryContainer
-            radius: Tokens.rounding.normal
+            radius: Tokens.rounding.medium
 
             StateLayer {
                 color: Services.Colours.palette.m3onPrimaryContainer

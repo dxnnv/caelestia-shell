@@ -18,7 +18,7 @@ StyledRect {
     property string lastError: ""
     property int refreshInterval: 1800
     property color colour: Colours.palette.m3secondary
-    readonly property int padding: Config.bar.github.background ? Tokens.padding.normal : Tokens.padding.small
+    readonly property int padding: Config.bar.github.background ? Tokens.padding.medium : Tokens.padding.small
     readonly property int cellSize: 12
     readonly property int cellSpacing: Tokens.spacing.small
     readonly property var displayDays: weekDays.length > 0 ? weekDays : [
