@@ -14,7 +14,8 @@ PageBase {
             microphone: qsTr("Microphone"),
             network: qsTr("Network"),
             bluetooth: qsTr("Bluetooth"),
-            battery: qsTr("Battery")
+            battery: qsTr("Battery"),
+            yubiKey: qsTr("YubiKey")
         })
 
     title: qsTr("Status icons")

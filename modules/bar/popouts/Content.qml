@@ -7,7 +7,7 @@ import Quickshell.Services.SystemTray
 import Caelestia.Config
 import qs.components
 import qs.services as Services
-import "../components" as BarComponents
+import qs.modules.bar.components as BarComponents
 
 Item {
     id: root
@@ -111,6 +111,11 @@ Item {
         Popout {
             name: "peripheralbattery"
             sourceComponent: PeripheralBattery {}
+        }
+
+        Popout {
+            name: "yubikey"
+            sourceComponent: YubiKeyTouch {}
         }
 
         Popout {

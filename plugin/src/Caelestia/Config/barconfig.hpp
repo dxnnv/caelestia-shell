@@ -113,6 +113,7 @@ class BarConfig : public settings::ObjectNode {
             LIST_ENTRY(kbLayout, false),
             LIST_ENTRY(network, true),
             LIST_ENTRY(bluetooth, true),
+            LIST_ENTRY(yubiKey, false),
             LIST_ENTRY(battery, true),
             LIST_ENTRY(peripheralBattery, false),
         }))
