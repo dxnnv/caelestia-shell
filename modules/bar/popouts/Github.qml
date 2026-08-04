@@ -66,7 +66,7 @@ Item {
                 MaterialIcon {
                     text: "chevron_right"
                     color: Services.Colours.palette.m3onPrimaryContainer
-                    font.pointSize: Tokens.font.size.large
+                    font: Tokens.font.icon.large
                 }
             }
         }
