@@ -93,7 +93,7 @@ PageBase {
             last: true
             icon: "code"
             text: qsTr("GitHub")
-            subtext: qsTr("Contributions")
+            subtext: qsTr("Contributions, token setup")
             onClicked: root.nState.openSubPage(10)
         }
 
