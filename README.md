@@ -469,6 +469,9 @@ For example, to automatically hide the bar on the monitor named `DP-1`:
             "showDate": false,
             "showIcon": true
         },
+        "github": {
+            "background": false
+        },
         "statusIcons": [
             {
                 "id": "lockStatus",
