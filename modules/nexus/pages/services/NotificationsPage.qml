@@ -36,6 +36,24 @@ PageBase {
     ]
     readonly property list<string> toastFullscreenValues: ["off", "important", "all"]
 
+    // "Now Playing" toast icon type, mapped to GlobalConfig.utilities.toasts.nowPlayingType
+    readonly property list<MenuItem> nowPlayingTypeItems: [
+        MenuItem {
+            text: qsTr("Material")
+            icon: "music_note"
+        },
+        MenuItem {
+            text: qsTr("Active Player")
+            icon: "play_circle"
+        },
+        MenuItem {
+            text: qsTr("Album Art")
+            icon: "art_track"
+        }
+    ]
+
+    readonly property list<string> nowPlayingTypeValues: ["material", "theme", "image"]
+
     title: qsTr("Notifications")
     isSubPage: true
 
@@ -181,10 +199,19 @@ PageBase {
         }
 
         ToggleRow {
-            last: true
             text: qsTr("Now playing")
             checked: GlobalConfig.utilities.toasts.nowPlaying
             onToggled: GlobalConfig.utilities.toasts.nowPlaying = checked
+        }
+
+        SelectRow {
+            last: true
+            label: qsTr("Now playing icon")
+            subtext: qsTr("The type of icon to show for now playing toasts")
+            menuOnTop: true
+            menuItems: root.nowPlayingTypeItems
+            active: root.nowPlayingTypeItems[Math.max(0, root.nowPlayingTypeValues.indexOf(GlobalConfig.utilities.toasts.nowPlayingType))]
+            onSelected: item => GlobalConfig.utilities.toasts.nowPlayingType = root.nowPlayingTypeValues[root.nowPlayingTypeItems.indexOf(item)]
         }
     }
 }
