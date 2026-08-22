@@ -910,6 +910,19 @@ Check out the configuring section on the [dots repo](https://github.com/caelesti
 
 See the [manual installation](#manual-installation) section for the corresponding repo.
 
+### How do I enable blur for the Polkit dialog?
+
+Add the following layer rule to your `~/.config/caelestia/hypr-user.lua`:
+
+```lua
+hl.layer_rule({
+    match = { namespace = "caelestia-polkit" },
+    no_anim = true,
+    blur = true,
+    ignore_alpha = 0.1,
+})
+```
+
 ### I want to disable ___ feature!
 
 Please read the [configuring](#configuring) section.
