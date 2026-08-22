@@ -4,7 +4,7 @@ import Caelestia.Config
 import qs.components
 import qs.services
 
-Item {
+StyledRect {
     id: root
 
     required property var popouts
@@ -15,6 +15,7 @@ Item {
     property string lastError: ""
     property int refreshInterval: 1800
     property color colour: Colours.palette.m3secondary
+    readonly property int padding: Config.bar.github.background ? Tokens.padding.normal : Tokens.padding.small
     readonly property int cellSize: 12
     readonly property int cellSpacing: Tokens.spacing.small
     readonly property var displayDays: weekDays.length > 0 ? weekDays : [
@@ -45,8 +46,11 @@ Item {
         return (value || "").replace(/bearer\s+[A-Za-z0-9_\-.]+/gi, "bearer [redacted]");
     }
 
-    implicitWidth: cells.implicitWidth
-    implicitHeight: cells.implicitHeight
+    implicitWidth: Tokens.sizes.bar.innerWidth
+    implicitHeight: cells.implicitHeight + root.padding * 2
+
+    color: Qt.alpha(Colours.tPalette.m3surfaceContainer, Config.bar.github.background ? Colours.tPalette.m3surfaceContainer.a : 0)
+    radius: Tokens.rounding.full
 
     Column {
         id: cells
