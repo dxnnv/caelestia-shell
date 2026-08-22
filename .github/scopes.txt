@@ -8,6 +8,7 @@ nexus
 notifs
 osd
 picker
+polkit
 toasts
 session
 sidebar
