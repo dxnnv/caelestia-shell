@@ -7,7 +7,7 @@ import qs.components
 import qs.services
 import qs.modules.bar.components
 
-Item {
+StyledRect {
     id: root
 
     required property var popouts
@@ -48,8 +48,11 @@ Item {
         return days;
     }
 
-    implicitWidth: cells.implicitWidth
-    implicitHeight: cells.implicitHeight
+    implicitWidth: Tokens.sizes.bar.innerWidth
+    implicitHeight: cells.implicitHeight + (Config.bar.github.background ? Tokens.padding.medium : Tokens.padding.small) * 2
+
+    color: Qt.alpha(Colours.tPalette.m3surfaceContainer, Config.bar.github.background ? Colours.tPalette.m3surfaceContainer.a : 0)
+    radius: Tokens.rounding.full
 
     Column {
         id: cells
