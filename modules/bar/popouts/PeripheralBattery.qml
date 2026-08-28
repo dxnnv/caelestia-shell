@@ -6,6 +6,7 @@ import Quickshell.Services.UPower
 import Caelestia.Config
 import qs.components
 import qs.services
+import qs.utils
 
 Column {
     id: root
@@ -28,24 +29,7 @@ Column {
 
             MaterialIcon {
                 anchors.verticalCenter: parent.verticalCenter
-                text: {
-                    const t = peripheralRow.modelData.type;
-                    if (t === UPowerDeviceType.Mouse || t === UPowerDeviceType.Touchpad)
-                        return "mouse";
-                    if (t === UPowerDeviceType.Keyboard)
-                        return "keyboard";
-                    if (t === UPowerDeviceType.Headset || t === UPowerDeviceType.Headphones)
-                        return "headphones";
-                    if (t === UPowerDeviceType.GamingInput)
-                        return "sports_esports";
-                    if (t === UPowerDeviceType.Pen)
-                        return "stylus";
-                    if (t === UPowerDeviceType.Speakers || t === UPowerDeviceType.OtherAudio)
-                        return "speaker";
-                    if (t === UPowerDeviceType.Phone)
-                        return "smartphone";
-                    return "battery_full";
-                }
+                text: Icons.getBatteryIcon(peripheralRow.modelData.percentage)
                 color: Colours.palette.m3onSurface
             }
 
