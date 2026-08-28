@@ -21,6 +21,8 @@ qml_module(caelestia-services
         networkusage.cpp
         hyprdevices.cpp
         hyprextras.cpp
+        discordipc.cpp
+        discordipc.hpp
     LIBRARIES
         Qt::DBus
         Qt::Network
