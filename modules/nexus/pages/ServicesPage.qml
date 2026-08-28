@@ -184,8 +184,15 @@ PageBase {
             text: qsTr("Service tuning")
         }
 
-        StepperRow {
+        NavRow {
             first: true
+            icon: "chat" // Using chat since discord icon might not be available in Material icons
+            text: qsTr("Discord Rich Presence")
+            subtext: qsTr("Broadcast your status to Discord")
+            onClicked: root.nState.openSubPage(2)
+        }
+
+        StepperRow {
             label: qsTr("Visualiser bars")
             subtext: qsTr("Number of bars in the audio visualisers")
             value: GlobalConfig.services.visualiserBars

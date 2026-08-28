@@ -167,6 +167,9 @@ QtObject {
                 Component {
                     NotificationsPage {}
                 }
+                Component {
+                    ArpcPage {}
+                }
             }
         },
         Component {
