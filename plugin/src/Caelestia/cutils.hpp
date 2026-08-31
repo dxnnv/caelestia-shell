@@ -22,6 +22,9 @@ public:
     Q_INVOKABLE void saveItem(QQuickItem* target, const QUrl& path, const QRect& rect, const QJSValue& onSaved = {},
         const QJSValue& onFailed = {});
 
+    Q_INVOKABLE void sampleColour(
+        QQuickItem* target, const QPointF& position, const QJSValue& onSampled, const QJSValue& onFailed = {});
+
     Q_INVOKABLE static bool copyFile(const QUrl& source, const QUrl& target, bool overwrite = true);
     Q_INVOKABLE static bool deleteFile(const QUrl& path);
     Q_INVOKABLE static QString toLocalFile(const QUrl& url);
