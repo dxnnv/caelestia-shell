@@ -70,6 +70,71 @@ void CUtils::saveItem(
         });
 }
 
+void CUtils::sampleColour(
+    QQuickItem* target, const QPointF& position, const QJSValue& onSampled, const QJSValue& onFailed) {
+    const auto fail = [onFailed]() {
+        if (onFailed.isCallable()) {
+            onFailed.call();
+        }
+    };
+
+    if (!target) {
+        qCWarning(lcCUtils) << "sampleColour: a target is required";
+        fail();
+        return;
+    }
+
+    if (!target->window()) {
+        qCWarning(lcCUtils) << "sampleColour: unable to sample target" << target << "without a window";
+        fail();
+        return;
+    }
+
+    if (!onSampled.isCallable()) {
+        qCWarning(lcCUtils) << "sampleColour: a callback is required";
+        fail();
+        return;
+    }
+
+    const QSizeF targetSize = target->size();
+    if (targetSize.isEmpty()) {
+        qCWarning(lcCUtils) << "sampleColour: unable to sample empty target" << target;
+        fail();
+        return;
+    }
+
+    const QSharedPointer<const QQuickItemGrabResult> grabResult = target->grabToImage();
+    if (!grabResult) {
+        qCWarning(lcCUtils) << "sampleColour: failed to grab target" << target;
+        fail();
+        return;
+    }
+
+    QObject::connect(grabResult.data(), &QQuickItemGrabResult::ready, this,
+        [grabResult, targetSize, position, onSampled, fail, this]() {
+            const QImage image = grabResult->image();
+            if (image.isNull()) {
+                qCWarning(lcCUtils) << "sampleColour: grabbed image is null";
+                fail();
+                return;
+            }
+
+            const qreal xScale = static_cast<qreal>(image.width()) / targetSize.width();
+            const qreal yScale = static_cast<qreal>(image.height()) / targetSize.height();
+            const int x = qBound(0, static_cast<int>(position.x() * xScale), image.width() - 1);
+            const int y = qBound(0, static_cast<int>(position.y() * yScale), image.height() - 1);
+
+            auto* const engine = qmlEngine(this);
+            if (!engine) {
+                qCWarning(lcCUtils) << "sampleColour: unable to access the QML engine";
+                fail();
+                return;
+            }
+
+            onSampled.call({ engine->toScriptValue(image.pixelColor(x, y)) });
+        });
+}
+
 bool CUtils::copyFile(const QUrl& source, const QUrl& target, bool overwrite) {
     if (!source.isLocalFile()) {
         qCWarning(lcCUtils) << "copyFile: source" << source << "is not a local file";
