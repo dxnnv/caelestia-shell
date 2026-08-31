@@ -7,6 +7,7 @@ import Caelestia.Config
 import Caelestia.Services
 import qs.services
 import qs.utils
+import qs.modules.colourpicker as ColourPicker
 
 Searcher {
     id: root
@@ -15,8 +16,25 @@ Searcher {
         return search.slice(GlobalConfig.launcher.actionPrefix.length);
     }
 
-    list: variants.instances
+    list: {
+        const actions = [colourPickerAction];
+        actions.push(...variants.instances);
+        return actions;
+    }
     useFuzzy: GlobalConfig.launcher.useFuzzy.actions
+
+    QtObject {
+        id: colourPickerAction
+
+        readonly property string name: qsTr("Colour picker")
+        readonly property string desc: qsTr("Choose and copy colours")
+        readonly property string icon: "colorize"
+
+        function onClicked(list: AppList): void {
+            list.screenState.launcher = false;
+            ColourPicker.ColourPickerWindow.create();
+        }
+    }
 
     Variants {
         id: variants
