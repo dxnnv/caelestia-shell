@@ -91,11 +91,18 @@ PageBase {
         }
 
         NavRow {
-            last: true
             icon: "code"
             text: Tr.tr("GitHub")
-            subtext: Tr.tr("Contributions")
-            onClicked: root.nState.openSubPage(10)
+            subtext: Tr.tr("Contributions, token setup")
+            onClicked: root.nState.openSubPage(11)
+        }
+
+        NavRow {
+            last: true
+            icon: "music_note"
+            text: Tr.tr("Mini player")
+            subtext: Tr.tr("Visualiser, title length, background")
+            onClicked: root.nState.openSubPage(12)
         }
 
         // Scroll actions
