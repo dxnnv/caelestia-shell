@@ -142,6 +142,9 @@ QtObject {
                 Component {
                     BarGithub {}
                 }
+                Component {
+                    BarMiniPlayer {}
+                }
             }
         },
         Component {
