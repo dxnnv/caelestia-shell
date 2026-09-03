@@ -114,6 +114,13 @@ Item {
         }
 
         Popout {
+            name: "miniPlayer"
+            sourceComponent: MiniPlayer {
+                popouts: root.popouts
+            }
+        }
+
+        Popout {
             name: "audio"
             sourceComponent: AudioPopout {
                 popouts: root.popouts
