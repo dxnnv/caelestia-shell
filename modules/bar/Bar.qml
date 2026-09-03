@@ -112,9 +112,7 @@ ColumnLayout {
     Repeater {
         id: repeater
 
-        model: ScriptModel {
-            values: root.Config.bar.entries.values.filter(e => e.enabled)
-        }
+        model: root.Config.bar.entries.values.filter(e => e.enabled)
 
         DelegateChooser {
             role: "id"
@@ -146,7 +144,10 @@ ColumnLayout {
             DelegateChoice {
                 roleValue: "activeWindow"
                 delegate: EntryWrapper {
+                    Layout.fillHeight: !root.Config.bar.entries.values.some(e => e.enabled && e.id === "spacer")
+
                     ActiveWindow {
+                        anchors.centerIn: parent
                         objectName: "taskbarActiveWindow"
                         bar: root
                         monitor: Brightness.getMonitorForScreen(root.screen)
