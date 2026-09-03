@@ -92,6 +92,16 @@ class BarGithub : public settings::ObjectNode {
     CONFIG_PROPERTY(bool, background, false)
 };
 
+class BarMiniPlayer : public settings::ObjectNode {
+    CONFIG_NODE(BarMiniPlayer, settings::ObjectNode)
+
+    CONFIG_PROPERTY(bool, background, false)
+    CONFIG_PROPERTY(bool, showVisualiser, true)
+    CONFIG_PROPERTY(int, maxTitleLength, 25)
+    CONFIG_PROPERTY(bool, horizontalVolume, false)
+    CONFIG_PROPERTY(bool, autoHide, false)
+};
+
 class BarConfig : public settings::ObjectNode {
     CONFIG_NODE(BarConfig, settings::ObjectNode)
 
@@ -105,6 +115,7 @@ class BarConfig : public settings::ObjectNode {
     CONFIG_SUBOBJECT(BarTray, tray)
     CONFIG_SUBOBJECT(BarClock, clock)
     CONFIG_SUBOBJECT(BarGithub, github)
+    CONFIG_SUBOBJECT(BarMiniPlayer, miniPlayer)
     CONFIG_LIST(EntryList, statusIcons,
         DEFAULT_ARG({
             LIST_ENTRY(lockStatus, true),
@@ -122,6 +133,7 @@ class BarConfig : public settings::ObjectNode {
             LIST_ENTRY(logo, true),
             LIST_ENTRY(workspaces, true),
             LIST_ENTRY(spacer, true),
+            LIST_ENTRY(miniPlayer, false),
             LIST_ENTRY(activeWindow, true),
             LIST_ENTRY(spacer, true),
             LIST_ENTRY(tray, true),
