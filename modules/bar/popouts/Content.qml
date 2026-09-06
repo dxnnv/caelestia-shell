@@ -109,6 +109,11 @@ Item {
         }
 
         Popout {
+            name: "peripheralbattery"
+            sourceComponent: PeripheralBattery {}
+        }
+
+        Popout {
             name: "audio"
             sourceComponent: AudioPopout {
                 popouts: root.popouts
@@ -138,7 +143,7 @@ Item {
 
         Repeater {
             model: ScriptModel {
-                values: SystemTray.items.values.filter(i => i.hasMenu && !GlobalConfig.bar.tray.hiddenIcons.includes(i.id) && !Services.TrayFilter.shouldHide(i))
+                values: SystemTray.items.values.filter(i => i.hasMenu && !Services.TrayFilter.shouldHide(i))
             }
 
             Popout {
