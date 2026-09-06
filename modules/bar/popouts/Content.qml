@@ -6,7 +6,8 @@ import Quickshell
 import Quickshell.Services.SystemTray
 import Caelestia.Config
 import qs.components
-import qs.services
+import qs.services as Services
+import "../components" as BarComponents
 
 Item {
     id: root
@@ -42,7 +43,7 @@ Item {
             name: "network"
             sourceComponent: Network {
                 popouts: root.popouts
-                view: Nmcli.activeEthernet ? "ethernet" : "wireless"
+                view: Services.Nmcli.activeEthernet ? "ethernet" : "wireless"
             }
         }
 
@@ -124,9 +125,20 @@ Item {
             sourceComponent: LockStatus {}
         }
 
+        Popout {
+            name: "github"
+            sourceComponent: Github {
+                popouts: root.popouts
+                days: BarComponents.GithubStore.days
+                total: BarComponents.GithubStore.total
+                username: BarComponents.GithubStore.username
+                lastError: BarComponents.GithubStore.lastError
+            }
+        }
+
         Repeater {
             model: ScriptModel {
-                values: SystemTray.items.values.filter(i => i.hasMenu && !GlobalConfig.bar.tray.hiddenIcons.includes(i.id))
+                values: SystemTray.items.values.filter(i => i.hasMenu && !GlobalConfig.bar.tray.hiddenIcons.includes(i.id) && !Services.TrayFilter.shouldHide(i))
             }
 
             Popout {
