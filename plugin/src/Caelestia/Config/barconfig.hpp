@@ -76,6 +76,7 @@ class BarTray : public settings::ObjectNode {
     CONFIG_PROPERTY(bool, compact, false)
     CONFIG_GLOBAL_PROPERTY(QVariantList, iconSubs, {})
     CONFIG_GLOBAL_PROPERTY(QStringList, hiddenIcons, {})
+    CONFIG_GLOBAL_PROPERTY(QStringList, hiddenItems, {})
 };
 
 class BarClock : public settings::ObjectNode {
@@ -116,6 +117,7 @@ class BarConfig : public settings::ObjectNode {
             LIST_ENTRY(activeWindow, true),
             LIST_ENTRY(spacer, true),
             LIST_ENTRY(tray, true),
+            LIST_ENTRY(github, false),
             LIST_ENTRY(clock, true),
             LIST_ENTRY(statusIcons, true),
             LIST_ENTRY(power, true),
