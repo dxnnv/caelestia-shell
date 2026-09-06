@@ -142,6 +142,14 @@ StyledRect {
                         }
                     }
                 }
+                DelegateChoice {
+                    roleValue: "peripheralBattery"
+                    delegate: EntryWrapper {
+                        PeripheralBatteryStatus {
+                            colour: root.colour
+                        }
+                    }
+                }
             }
         }
     }

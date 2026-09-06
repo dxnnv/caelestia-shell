@@ -76,7 +76,6 @@ class BarTray : public settings::ObjectNode {
     CONFIG_PROPERTY(bool, compact, false)
     CONFIG_GLOBAL_PROPERTY(QVariantList, iconSubs, {})
     CONFIG_GLOBAL_PROPERTY(QStringList, hiddenIcons, {})
-    CONFIG_GLOBAL_PROPERTY(QStringList, hiddenItems, {})
 };
 
 class BarClock : public settings::ObjectNode {
@@ -109,6 +108,7 @@ class BarConfig : public settings::ObjectNode {
             LIST_ENTRY(network, true),
             LIST_ENTRY(bluetooth, true),
             LIST_ENTRY(battery, true),
+            LIST_ENTRY(peripheralBattery, false),
         }))
     CONFIG_LIST(EntryList, entries,
         DEFAULT_ARG({
@@ -124,6 +124,7 @@ class BarConfig : public settings::ObjectNode {
             LIST_ENTRY(power, true),
         }))
     CONFIG_PROPERTY(QStringList, excludedScreens, {})
+    CONFIG_PROPERTY(QStringList, peripheralBatteryExcluded, {})
 };
 
 } // namespace caelestia::config
