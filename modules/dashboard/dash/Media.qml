@@ -97,7 +97,7 @@ Item {
 
         animate: true
         horizontalAlignment: Text.AlignHCenter
-        text: (Players.active?.trackAlbum ?? Tr.tr("No media")) || Tr.tr("Unknown album")
+        text: (Players.active?.trackAlbum ?? Tr.tr("*crickets*")) || Tr.tr("Unknown album")
         color: Colours.palette.m3outline
         font: Tokens.font.body.small
 
@@ -114,7 +114,7 @@ Item {
 
         animate: true
         horizontalAlignment: Text.AlignHCenter
-        text: (Players.active?.trackArtist ?? Tr.tr("No media")) || Tr.tr("Unknown artist")
+        text: (Players.active?.trackArtist ?? Tr.tr(" ")) || Tr.tr("Unknown artist")
         color: Colours.palette.m3secondary
 
         width: parent.implicitWidth - Tokens.padding.extraLargeIncreased
