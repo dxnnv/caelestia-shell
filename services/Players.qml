@@ -41,6 +41,11 @@ Singleton {
         return "";
     }
 
+    function getIcon(player: MprisPlayer): string {
+        const iconName = player?.desktopEntry ?? "";
+        return iconName && Quickshell.hasThemeIcon(iconName) ? `theme:${iconName}` : "music_note";
+    }
+
     // Quickshell only emits postTrackChanged when trackid/url/title change, so late
     // artist updates (common with mpv-mpris + yt-dlp player) never retrigger it. Watch
     // title/artist too and toast once both are usable.
@@ -62,7 +67,7 @@ Singleton {
             return;
 
         lastNowPlayingKey = key;
-        Toaster.toast(Tr.tr("Now playing"), Tr.trCtx("%1 - %2", "track artist and title").arg(artist).arg(title), "music_note");
+        Toaster.toast(Tr.tr("Now playing"), Tr.trCtx("%1 - %2", "track artist and title").arg(artist).arg(title), root.getIcon(player));
     }
 
     onActiveChanged: lastNowPlayingKey = ""
