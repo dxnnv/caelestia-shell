@@ -129,15 +129,15 @@ Singleton {
             const minutes = Math.floor((up % 3600) / 60);
 
             // TRANSLATORS: joins uptime components, e.g. "2 days, 3 hours"
-            const sep = Tr.trCtx(", ", "uptime component separator");
+            const sep = Tr.trCtx(" ", "uptime component separator");
 
             const parts = [];
             if (days > 0)
-                parts.push(Tr.trN("%n day", "%n days", days));
+                parts.push(Tr.trN("%nd", "%nd", days));
             if (hours > 0)
-                parts.push(Tr.trN("%n hour", "%n hours", hours));
+                parts.push(Tr.trN("%nh", "%nh", hours));
             if (minutes > 0 || parts.length === 0)
-                parts.push(Tr.trN("%n minute", "%n minutes", minutes));
+                parts.push(Tr.trN("%nm", "%nm", minutes));
 
             root.uptime = parts.join(sep);
             root.uptimeShort = parts.slice(0, 2).join(sep);
