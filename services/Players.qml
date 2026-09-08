@@ -41,9 +41,22 @@ Singleton {
         return "";
     }
 
-    function getIcon(player: MprisPlayer): string {
+    function getThemeIcon(player: MprisPlayer): string {
         const iconName = player?.desktopEntry ?? "";
         return iconName && Quickshell.hasThemeIcon(iconName) ? `theme:${iconName}` : "music_note";
+    }
+
+    function getToastIcon(player: MprisPlayer): string {
+        switch (GlobalConfig.utilities.toasts.nowPlayingType) {
+        case "theme":
+            return getThemeIcon(player);
+        case "image":
+            const artUrl = getArtUrl(player);
+            return artUrl ? `image:${artUrl}` : "music_note";
+        case "material":
+        default:
+            return "music_note";
+        }
     }
 
     // Quickshell only emits postTrackChanged when trackid/url/title change, so late
@@ -67,7 +80,7 @@ Singleton {
             return;
 
         lastNowPlayingKey = key;
-        Toaster.toast(Tr.tr("Now playing"), Tr.trCtx("%1 - %2", "track artist and title").arg(artist).arg(title), root.getIcon(player));
+        Toaster.toast(Tr.tr("Now playing"), Tr.trCtx("%1 - %2", "track artist and title").arg(artist).arg(title), root.getToastIcon(player));
     }
 
     onActiveChanged: lastNowPlayingKey = ""
