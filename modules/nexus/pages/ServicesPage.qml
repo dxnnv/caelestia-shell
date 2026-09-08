@@ -187,8 +187,15 @@ PageBase {
             text: Tr.tr("Service tuning")
         }
 
-        StepperRow {
+        NavRow {
             first: true
+            icon: "chat" // Using chat since discord icon might not be available in Material icons
+            text: Tr.tr("Discord Rich Presence")
+            subtext: Tr.tr("Broadcast your status to Discord")
+            onClicked: root.nState.openSubPage(2)
+        }
+
+        StepperRow {
             // TRANSLATORS: bars of a spectrum analyser, not the taskbar
             label: Tr.tr("Visualiser bars")
             subtext: Tr.tr("Number of bars in the audio visualisers")

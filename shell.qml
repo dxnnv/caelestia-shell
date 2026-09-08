@@ -16,6 +16,9 @@ import qs.services
 ShellRoot {
     id: root
 
+    // Force service initialization
+    property var _arpcInit: DiscordRPC
+
     settings.watchFiles: true
 
     Binding {
