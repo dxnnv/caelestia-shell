@@ -115,12 +115,12 @@ Item {
 
                     StyledText {
                         Layout.alignment: Qt.AlignHCenter
-                        text: Tr.tr("Nothing playing")
+                        text: Tr.tr("*crickets*")
                         font: Tokens.font.headline.medium
                     }
 
                     StyledText {
-                        text: Tr.tr("Play something for it to show up here!")
+                        text: Tr.tr("Pretty quiet around here...")
                         color: Colours.palette.m3onSurfaceVariant
                         font: Tokens.font.body.large
                     }
