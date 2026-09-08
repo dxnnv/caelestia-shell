@@ -37,6 +37,8 @@ StyledRect {
     function collapsed(entry: var): bool {
         if (entry.id === "lockStatus")
             return !Hypr.capsLock && !Hypr.numLock;
+        if (entry.id === "yubiKey")
+            return !YubiKey.waiting;
         return false;
     }
 
@@ -131,6 +133,18 @@ StyledRect {
                     delegate: EntryWrapper {
                         BluetoothStatus {
                             colour: root.colour
+                        }
+                    }
+                }
+                DelegateChoice {
+                    roleValue: "yubiKey"
+                    delegate: EntryWrapper {
+                        id: yubiKeyWrapper
+
+                        visible: present
+
+                        YubiKeyStatus {
+                            active: yubiKeyWrapper.present
                         }
                     }
                 }
