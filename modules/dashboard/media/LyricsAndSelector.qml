@@ -7,6 +7,7 @@ import Caelestia.I18n
 import qs.components
 import qs.components.controls
 import qs.services
+import qs.utils
 
 Item {
     ColumnLayout {
@@ -19,6 +20,7 @@ Item {
         RowLayout {
             Layout.bottomMargin: -Tokens.spacing.medium
             spacing: Tokens.spacing.medium
+            visible: !Config.dashboard.replaceMediaLyricsWithVisuals
             z: 1
 
             MaterialIcon {
@@ -36,9 +38,37 @@ Item {
             LyricsInfo {}
         }
 
-        LyricList {
+        Loader {
             Layout.fillWidth: true
             Layout.fillHeight: true
+
+            sourceComponent: Config.dashboard.replaceMediaLyricsWithVisuals ? visualComp : lyricComp
+        }
+
+        Component {
+            id: lyricComp
+
+            LyricList {}
+        }
+
+        Component {
+            id: visualComp
+
+            Item {
+                anchors.fill: parent
+
+                AnimatedImage {
+                    id: gif
+
+                    anchors.fill: parent
+
+                    playing: Players.active?.isPlaying ?? false
+                    speed: Audio.beatTracker.bpm / Config.general.mediaGifSpeedAdjustment // qmllint disable unresolved-type
+                    source: Paths.absolutePath(Config.paths.mediaGif)
+                    asynchronous: true
+                    fillMode: AnimatedImage.PreserveAspectFit
+                }
+            }
         }
 
         SplitButton {

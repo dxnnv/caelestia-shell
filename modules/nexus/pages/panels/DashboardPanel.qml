@@ -77,6 +77,21 @@ PageBase {
             onToggled: GlobalConfig.dashboard.showWeather = checked
         }
 
+        // Media
+        SectionHeader {
+            text: Tr.tr("Media")
+        }
+
+        ToggleRow {
+            first: true
+            last: true
+            Layout.fillWidth: true
+            text: Tr.tr("Replace lyrics with visuals")
+            subtext: Tr.tr("Show the media GIF instead of lyrics")
+            checked: Config.dashboard.replaceMediaLyricsWithVisuals
+            onToggled: GlobalConfig.dashboard.replaceMediaLyricsWithVisuals = checked
+        }
+
         // Performance widgets
         SectionHeader {
             text: Tr.tr("Performance widgets")
