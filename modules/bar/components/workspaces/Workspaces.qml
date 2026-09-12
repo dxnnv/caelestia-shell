@@ -15,7 +15,7 @@ StyledClippingRect {
     required property bool fullscreen
 
     readonly property bool onSpecial: Hypr.monitorFor(screen)?.lastIpcObject.specialWorkspace?.name !== ""
-    readonly property int activeWsId: Hypr.monitorFor(screen).activeWorkspace?.id ?? 1
+    readonly property int activeWsId: Hypr.monitorFor(screen)?.activeWorkspace?.id ?? 1
 
     readonly property var occupied: {
         // Other monitors' workspaces count as unoccupied when hiding unoccupied
