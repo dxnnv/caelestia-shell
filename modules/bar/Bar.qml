@@ -72,6 +72,10 @@ ColumnLayout {
             popouts.currentName = id.toLowerCase();
             popouts.currentCenter = (ch.item as Item).mapToItem(root, 0, (ch.item as Item).implicitHeight / 2).y ?? 0;
             popouts.hasCurrent = true;
+        } else if (id === "github") {
+            popouts.currentName = "github";
+            popouts.currentCenter = Qt.binding(() => ch.mapToItem(root, 0, ch.height / 2).y);
+            popouts.hasCurrent = true;
         }
     }
 
@@ -152,6 +156,15 @@ ColumnLayout {
                 delegate: EntryWrapper {
                     Tray {
                         objectName: "taskbarTray"
+                    }
+                }
+            }
+            DelegateChoice {
+                roleValue: "github"
+                delegate: EntryWrapper {
+                    visible: !root.fullscreen
+                    GithubActivity {
+                        popouts: root.popouts
                     }
                 }
             }
