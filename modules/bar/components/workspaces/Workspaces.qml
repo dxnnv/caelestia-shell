@@ -54,6 +54,33 @@ StyledClippingRect {
 
     property real blur: onSpecial ? 1 : 0
 
+    function switchOrSwapWorkspace(ws: int): void {
+        const targetMonitor = monitor?.name;
+        if (!targetMonitor) {
+            Hypr.focusWorkspace(ws);
+            return;
+        }
+
+        Hypr.focusMonitor(targetMonitor);
+
+        if (activeWsId === ws) {
+            Hypr.toggleSpecial("special");
+            return;
+        }
+
+        const activeMonitor = Hypr.monitors.values.find(m => m.activeWorkspace?.id === ws)?.name;
+        if (activeMonitor) {
+            Hypr.swapMonitors(targetMonitor, activeMonitor);
+            return;
+        }
+
+        const owningMonitor = Hypr.workspaces.values.find(w => w.id === ws)?.monitor?.name;
+        if (owningMonitor && owningMonitor !== targetMonitor)
+            Hypr.moveWorkspaceToMonitor(ws, targetMonitor);
+
+        Hypr.focusWorkspace(ws);
+    }
+
     function workspaceIndex(id: int): int {
         if (!Config.bar.workspaces.showUnoccupied)
             return wsIds.indexOf(id);
@@ -171,12 +198,8 @@ StyledClippingRect {
             anchors.fill: workspaces
             onClicked: event => {
                 const ws = (workspaces.itemAt(event.x, event.y) as Workspace)?.ws;
-                if (!ws)
-                    return;
-                if (Hypr.activeWsId !== ws)
-                    Hypr.focusWorkspace(ws);
-                else
-                    Hypr.toggleSpecial("special");
+                if (ws)
+                    root.switchOrSwapWorkspace(ws);
             }
         }
 
