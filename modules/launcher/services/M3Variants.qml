@@ -14,6 +14,28 @@ Searcher {
         return search.slice(`${GlobalConfig.launcher.actionPrefix}variant `.length);
     }
 
+    function previewVariant(variant: string): var {
+        return ProcessUtil.run(["caelestia", "scheme", "preview", "--variant", variant]).then(result => {
+            if (result.code !== 0) {
+                console.warn("Failed to preview scheme variant:", result.stderr || result.stdout);
+                return null;
+            }
+
+            const snapshot = result.stdout.trim();
+            if (!snapshot)
+                return null;
+
+            try {
+                JSON.parse(snapshot);
+            } catch (error) {
+                console.warn("Scheme preview returned invalid JSON:", error);
+                return null;
+            }
+
+            return snapshot;
+        });
+    }
+
     list: [
         Variant {
             variant: "vibrant"
