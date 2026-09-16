@@ -44,6 +44,10 @@ Singleton {
         Hyprland.dispatch(request);
     }
 
+    function focusMonitor(monitor: string): void {
+        dispatch(usingLua ? `hl.dsp.focus({ monitor = "${monitor}" })` : `focusmonitor ${monitor}`);
+    }
+
     function focusWorkspace(ws: var): void {
         dispatch(usingLua ? `hl.dsp.focus({ workspace = "${ws}" })` : `workspace ${ws}`);
     }
@@ -83,6 +87,15 @@ Singleton {
         }
 
         focusWorkspace(openSpecials[nextIndex].name);
+    }
+
+    function moveWorkspaceToMonitor(ws: var, monitor: string): void {
+        dispatch(usingLua ? `hl.dsp.workspace.move({ workspace = ${ws}, monitor = "${monitor}" })` : `moveworkspacetomonitor ${ws} ${monitor}`);
+    }
+
+    function swapMonitors(monitor1: string, monitor2: string): void {
+        if (monitor1 !== monitor2)
+            dispatch(usingLua ? `hl.dsp.workspace.swap_monitors({ monitor1 = "${monitor1}", monitor2 = "${monitor2}" })` : `swapactiveworkspaces ${monitor1} ${monitor2}`);
     }
 
     function monitorNames(): list<string> {
