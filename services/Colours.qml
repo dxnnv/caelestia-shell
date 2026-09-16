@@ -65,9 +65,9 @@ Singleton {
         const scheme = JSON.parse(data);
 
         if (!isPreview) {
-            root.scheme = scheme.name;
-            flavour = scheme.flavour;
-            variant = scheme.variant || "";
+            root.scheme = (scheme.name || "").trim();
+            flavour = (scheme.flavour || "").trim();
+            variant = (scheme.variant || "").trim();
             currentLight = scheme.mode === "light";
         } else {
             previewLight = scheme.mode === "light";

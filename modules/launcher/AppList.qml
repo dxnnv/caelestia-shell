@@ -17,6 +17,7 @@ StyledListView {
     required property ScreenState screenState
 
     property string displayText
+    property int previewGeneration
 
     readonly property string requestedState: stateForText(search.text)
     readonly property string displayState: stateForText(displayText)
@@ -54,6 +55,27 @@ StyledListView {
         }
     }
 
+    function clearPreview(): void {
+        ++previewGeneration;
+        previewTimer.stop();
+        Colours.showPreview = false;
+    }
+
+    function schedulePreview(): void {
+        ++previewGeneration;
+        previewTimer.stop();
+
+        // State changes before displayText, its model, and its delegate
+        if (!screenState.launcher || state !== displayState)
+            return;
+
+        if (displayState !== "scheme" && displayState !== "variant")
+            return;
+
+        if (currentItem?.modelData) // qmllint disable missing-property
+            previewTimer.restart();
+    }
+
     model: ScriptModel {
         values: root.resultsForText(root.displayText)
         onValuesChanged: root.currentIndex = 0
@@ -85,11 +107,19 @@ StyledListView {
     state: screenState.launcher ? requestedState : displayState
 
     onStateChanged: {
+        clearPreview();
         if (state === "scheme" || state === "variant")
             Schemes.reload();
     }
 
+    onCurrentItemChanged: root.schedulePreview()
+
     Component.onCompleted: displayText = search.text
+
+    Component.onDestruction: {
+        ++previewGeneration;
+        Colours.showPreview = false;
+    }
 
     states: [
         State {
@@ -298,8 +328,52 @@ StyledListView {
     Connections {
         function onLauncherChanged() {
             root.syncDisplayText();
+
+            if (!root.screenState.launcher)
+                root.clearPreview();
         }
 
         target: root.screenState
+    }
+
+    Timer {
+        id: previewTimer
+
+        interval: 100
+        onTriggered: {
+            const modelData = root.currentItem?.modelData ?? null; // qmllint disable missing-property
+            const previewState = root.displayState;
+
+            if (!modelData || !root.screenState.launcher || root.state !== previewState)
+                return;
+
+            const generation = root.previewGeneration;
+
+            if (previewState === "scheme") {
+                Colours.load(JSON.stringify({
+                    name: modelData.name,
+                    flavour: modelData.flavour,
+                    variant: Colours.variant,
+                    mode: Colours.light ? "light" : "dark",
+                    colours: modelData.colours
+                }), true);
+                Colours.showPreview = true;
+            } else if (previewState === "variant") {
+                const variant = modelData.variant;
+
+                M3Variants.previewVariant(variant).then(snapshot => {
+                    if (generation !== root.previewGeneration || !root.screenState.launcher || root.state !== "variant" || root.displayState !== "variant" || root.currentItem?.modelData?.variant !== variant) // qmllint disable missing-property
+                        return;
+
+                    if (!snapshot) {
+                        Colours.showPreview = false;
+                        return;
+                    }
+
+                    Colours.load(snapshot, true);
+                    Colours.showPreview = true;
+                });
+            }
+        }
     }
 }
