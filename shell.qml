@@ -17,6 +17,9 @@ import qs.daemons
 ShellRoot {
     id: root
 
+    // Force service initialization
+    property var _arpcInit: DiscordRPC
+
     settings.watchFiles: true
 
     Component.onCompleted: {
