@@ -1,6 +1,7 @@
 #pragma once
 
 #include <qstring.h>
+#include <qstringlist.h>
 #include <qvariantlist.h>
 
 #include "settings/objectnode.hpp"
@@ -19,6 +20,29 @@ class PlayerAlias : public settings::ObjectNode {
     CONFIG_PROPERTY(QString, to, {})
 };
 CONFIG_LIST_TYPE(PlayerAlias, PlayerAliasList)
+
+class DiscordArpcOverride : public settings::ObjectNode {
+    CONFIG_NODE(DiscordArpcOverride, settings::ObjectNode)
+
+    CONFIG_PROPERTY(QString, appName, u"Caelestia Shell"_s)
+    CONFIG_PROPERTY(QString, details, {})
+    CONFIG_PROPERTY(bool, enabled, false)
+    CONFIG_PROPERTY(QString, largeImage, {})
+    CONFIG_PROPERTY(QString, smallImage, {})
+    CONFIG_PROPERTY(QString, state, {})
+};
+
+class DiscordArpc : public settings::ObjectNode {
+    CONFIG_NODE(DiscordArpc, settings::ObjectNode)
+
+    CONFIG_PROPERTY(bool, arpcEnabled, false)
+    CONFIG_PROPERTY(QString, arpcClientId, u"1126685412586733678"_s)
+    CONFIG_PROPERTY(bool, caelestiaInfo, false)
+    CONFIG_PROPERTY(bool, steamAutoDetect, false)
+    CONFIG_PROPERTY(QStringList, steamBlacklist, {})
+    CONFIG_PROPERTY(QStringList, targetWindows, {})
+    CONFIG_GLOBAL_SUBOBJECT(DiscordArpcOverride, manualOverride)
+};
 
 class ServiceConfig : public settings::ObjectNode {
     CONFIG_NODE(ServiceConfig, settings::ObjectNode)
@@ -43,6 +67,7 @@ class ServiceConfig : public settings::ObjectNode {
             vmap({ { u"from"_s, u"com.github.th_ch.youtube_music"_s }, { u"to"_s, u"YT Music"_s } }),
         }))
     CONFIG_GLOBAL_ENUM_PROPERTY(LyricsBackend, lyricsBackend, LyricsBackend::Auto)
+    CONFIG_GLOBAL_SUBOBJECT(DiscordArpc, discordArpc)
 };
 
 } // namespace caelestia::shell::config
