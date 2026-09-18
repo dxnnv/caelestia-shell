@@ -27,6 +27,7 @@ class UtilitiesToasts : public settings::ObjectNode {
     CONFIG_PROPERTY(bool, kbLimit, true)
     CONFIG_PROPERTY(bool, vpnChanged, true)
     CONFIG_PROPERTY(bool, nowPlaying, false)
+    CONFIG_PROPERTY(QString, nowPlayingType, u"material"_s)
 };
 
 class UtilitiesVpnProvider : public settings::ObjectNode {
