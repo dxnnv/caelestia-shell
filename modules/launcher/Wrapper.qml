@@ -16,6 +16,8 @@ Item {
     readonly property bool shouldBeActive: screenState.launcher && Config.launcher.enabled
 
     readonly property real maxHeight: {
+        if (!screen?.height)
+            return 0;
         let max = screen.height - Config.border.thickness * 2 + Tokens.padding.extraLarge;
         if (screenState.dashboard)
             max -= panels.dashboard.nonAnimHeight;

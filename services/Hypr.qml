@@ -90,7 +90,7 @@ Singleton {
     }
 
     function monitorFor(screen: ShellScreen): HyprlandMonitor {
-        return Hyprland.monitorFor(screen);
+        return screen ? Hyprland.monitorFor(screen) : null;
     }
 
     function trimWsName(name: string): string {
