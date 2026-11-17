@@ -113,6 +113,11 @@ Item {
         }
 
         Popout {
+            name: "yubikey"
+            sourceComponent: YubiKeyTouch {}
+        }
+
+        Popout {
             name: "audio"
             sourceComponent: AudioPopout {
                 popouts: root.popouts
