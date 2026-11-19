@@ -124,6 +124,13 @@ Item {
             sourceComponent: LockStatus {}
         }
 
+        Popout {
+            name: "github"
+            sourceComponent: Github {
+                popouts: root.popouts
+            }
+        }
+
         Repeater {
             model: ScriptModel {
                 values: SystemTray.items.values.filter(i => i.hasMenu && i.status !== Status.Passive && !TrayFilter.shouldHide(i))
