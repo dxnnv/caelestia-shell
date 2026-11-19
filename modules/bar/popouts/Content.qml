@@ -108,6 +108,11 @@ Item {
         }
 
         Popout {
+            name: "peripheralbattery"
+            sourceComponent: PeripheralBattery {}
+        }
+
+        Popout {
             name: "audio"
             sourceComponent: AudioPopout {
                 popouts: root.popouts
