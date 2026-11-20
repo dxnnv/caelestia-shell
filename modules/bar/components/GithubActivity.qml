@@ -94,7 +94,8 @@ StyledRect {
 
         command: ["bash", "-lc", `
         set -Eeuo pipefail
-        : "\${GITHUB_TOKEN:?Missing GITHUB_TOKEN}"
+        github_token="$(secret-tool lookup service caelestia-shell account github 2>/dev/null || echo '')"
+        [ -n "$github_token" ] || { echo "Unable to find github token in libsecret" >&2; exit 2; }
 
         payload="$(LOGIN="\${GITHUB_USERNAME-}" python - <<'PY'
 import json
@@ -129,7 +130,7 @@ PY
         tmp="$(mktemp)"
         trap 'rm -f -- "$tmp"' EXIT
         code="$(curl -sS -o "$tmp" -w "%{http_code}" \
-                 -H "Authorization: bearer $GITHUB_TOKEN" \
+                 -H "Authorization: bearer $github_token" \
                  -H "Content-Type: application/json" \
                  -X POST https://api.github.com/graphql \
                  --data "$payload")"
