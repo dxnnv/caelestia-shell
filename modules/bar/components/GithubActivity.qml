@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import Quickshell.Io
+import M3Shapes
 import Caelestia.Config
 import qs.components
 import qs.services
@@ -63,14 +64,12 @@ StyledRect {
         Repeater {
             model: GithubStore.days
 
-            delegate: Rectangle {
+            delegate: MaterialShape {
                 required property var modelData
 
                 width: 12
                 height: 12
-                radius: 2
-                border.width: 1
-                border.color: Qt.rgba(1, 1, 1, 0.08)
+                shape: MaterialShape.Square
                 color: modelData.color
             }
         }

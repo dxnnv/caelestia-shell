@@ -3,69 +3,113 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Caelestia.Config
+import Caelestia.I18n
 import qs.components
 import qs.services
+import qs.components.controls
 import qs.modules.bar.components
 
-Item {
+ColumnLayout {
     id: root
 
     required property var popouts
 
-    implicitWidth: layout.implicitWidth + Tokens.padding.medium * 2
-    implicitHeight: layout.implicitHeight + Tokens.padding.medium * 3
+    width: 300
+    spacing: Tokens.spacing.small
 
-    ColumnLayout {
-        id: layout
+    StyledText {
+        Layout.topMargin: Tokens.padding.medium
+        Layout.leftMargin: Tokens.padding.small
+        text: Tr.tr("GitHub")
+        font: Tokens.font.title.builders.small.weight(500).build()
+    }
 
-        anchors.left: parent.left
-        anchors.verticalCenter: parent.verticalCenter
-        spacing: Tokens.spacing.medium
+    StyledRect {
+        Layout.fillWidth: true
+        implicitWidth: cardLayout.implicitWidth + Tokens.padding.medium * 2
+        implicitHeight: cardLayout.implicitHeight + Tokens.padding.medium * 2
+        radius: Tokens.rounding.medium
+        color: Colours.tPalette.m3surfaceContainer
+        clip: true
 
-        StyledText {
-            text: GithubStore.username.length > 0 ? `@${GithubStore.username}` : "GitHub"
-            font.weight: 600
-        }
+        ColumnLayout {
+            id: cardLayout
 
-        StyledText {
-            text: GithubStore.lastError.length > 0 ? `Error: ${GithubStore.lastError}` : `Last 7 days: ${GithubStore.total} commits`
-            color: GithubStore.lastError.length > 0 ? Colours.palette.m3error : Colours.palette.m3secondary
-        }
+            width: parent.width - Tokens.padding.medium * 2
+            x: Tokens.padding.medium
+            y: Tokens.padding.medium
+            spacing: Tokens.spacing.small
 
-        StyledRect {
-            Layout.topMargin: Tokens.spacing.medium
-            implicitWidth: ctaRow.implicitWidth + Tokens.padding.medium * 2
-            implicitHeight: ctaRow.implicitHeight + Tokens.padding.medium * 2
-            color: Colours.palette.m3primaryContainer
-            radius: Tokens.rounding.medium
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: Tokens.spacing.small
 
-            StateLayer {
-                color: Colours.palette.m3onPrimaryContainer
-                radius: parent.radius
-                onClicked: {
-                    root.popouts.hasCurrent = false;
-                    Qt.openUrlExternally("https://github.com/" + GithubStore.username);
+                MaterialIcon {
+                    text: "person"
+                    color: Colours.palette.m3onSurfaceVariant
+                }
+
+                StyledText {
+                    Layout.fillWidth: true
+                    text: GithubStore.username.length > 0 ? `@${GithubStore.username}` : Tr.tr("Not authenticated")
+                    color: Colours.palette.m3onSurface
                 }
             }
 
             RowLayout {
-                id: ctaRow
-
-                anchors.centerIn: parent
+                Layout.fillWidth: true
                 spacing: Tokens.spacing.small
-
-                StyledText {
-                    Layout.leftMargin: Tokens.padding.small
-                    text: "Open profile"
-                    color: Colours.palette.m3onPrimaryContainer
-                }
+                visible: GithubStore.available
 
                 MaterialIcon {
-                    text: "chevron_right"
-                    color: Colours.palette.m3onPrimaryContainer
-                    font: Tokens.font.icon.large
+                    text: "history"
+                    color: Colours.palette.m3onSurfaceVariant
+                }
+
+                StyledText {
+                    Layout.fillWidth: true
+                    text: Tr.tr("Last 7 days")
+                    color: Colours.palette.m3onSurfaceVariant
+                }
+
+                StyledText {
+                    text: Tr.tr("%1 commits").arg(GithubStore.total)
+                    font.weight: 600
+                    color: Colours.palette.m3onSurface
                 }
             }
+
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: Tokens.spacing.small
+                visible: !GithubStore.available
+
+                MaterialIcon {
+                    text: "error"
+                    color: Colours.palette.m3error
+                }
+
+                StyledText {
+                    Layout.fillWidth: true
+                    text: GithubStore.lastError
+                    color: Colours.palette.m3error
+                    wrapMode: Text.Wrap
+                }
+            }
+        }
+    }
+
+    IconTextButton {
+        Layout.fillWidth: true
+        inactiveColour: Colours.palette.m3primaryContainer
+        inactiveOnColour: Colours.palette.m3onPrimaryContainer
+        verticalPadding: Tokens.padding.small
+        text: Tr.tr("Open profile")
+        icon: "open_in_new"
+
+        onClicked: {
+            root.popouts.hasCurrent = false;
+            Qt.openUrlExternally("https://github.com/" + GithubStore.username);
         }
     }
 }
